@@ -222,24 +222,19 @@ if (error) {
 
 ### CSS-Based Animations
 
-Magic Strings uses pure CSS animations for effects (sparkle, shine, spotlight) for better performance and maintainability.
+Magic Strings uses pure CSS animations for effects with no component props or JavaScript state.
 
-Magic components accept effect flags that apply CSS classes:
+**Magic Components**:
+- `MagicButton`: Always includes `.magic-shine` and `.magic-sparkle` effects
+- `MagicInput`: Always includes `.magic-shine`, `.magic-sparkle`, and `.magic-spotlight-focus` effects
+- `MagicSelectTrigger`: Always includes all three effects
 
-```typescript
-interface MagicComponentProps {
-  enableShine?: boolean      // Adds gradient shine on hover/focus
-  enableSparkle?: boolean    // Adds ✨ emoji pop animation on click
-  enableSpotlight?: boolean  // Adds radial glow effect on focus
-}
-```
+**CSS Classes Applied**:
+- `.magic-shine`: Gradient shine effect on hover/focus
+- `.magic-sparkle`: ✨ emoji pop animation on click
+- `.magic-spotlight-focus`: Radial spotlight glow on focus
 
-**Available CSS Classes**:
-- `.magic-shine`: Gradient shine effect
-- `.magic-sparkle`: Sparkle pop emoji animation
-- `.magic-spotlight-focus`: Radial spotlight glow
-
-All animations are triggered automatically via CSS pseudo-classes (`:hover`, `:focus`, `:active`) with no JavaScript state management needed.
+All animations are triggered automatically via CSS pseudo-classes (`:hover`, `:focus`, `:active`) with zero JavaScript overhead.
 
 ---
 
