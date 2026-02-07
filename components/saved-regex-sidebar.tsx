@@ -78,7 +78,7 @@ export function SavedRegexSidebar({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
-                        <h3 className="font-medium text-foreground truncate">{saved.name}</h3>
+                        <h3 className="font-medium text-foreground truncate text-sm font-mono">{saved.regex}</h3>
                       </div>
                       <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
                         {saved.regex}
@@ -192,11 +192,8 @@ export function SavedRegexSidebar({
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
-                      <h3 className="font-medium text-foreground truncate">{saved.name}</h3>
+                      <h3 className="font-medium text-foreground text-sm font-mono break-all">{saved.regex}</h3>
                     </div>
-                    <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
-                      {saved.regex}
-                    </code>
                     <div className="flex flex-wrap gap-1">
                       {saved.criteria.slice(0, 3).map((c) => (
                         <Badge

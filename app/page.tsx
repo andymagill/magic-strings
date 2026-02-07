@@ -19,9 +19,10 @@ export default function Page() {
   const [mounted, setMounted] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Load saved patterns on mount
+  // Load saved patterns on mount (sorted by most recent first)
   useEffect(() => {
-    setSavedRegexes(loadSavedRegexes())
+    const loaded = loadSavedRegexes()
+    setSavedRegexes(loaded.sort((a, b) => b.createdAt - a.createdAt))
     setMounted(true)
   }, [])
 
@@ -31,8 +32,8 @@ export default function Page() {
         const existing = prev.findIndex((r) => r.id === saved.id)
         let next: SavedRegex[]
         if (existing >= 0) {
-          next = [...prev]
-          next[existing] = saved
+          // Update existing and move to front (most recent)
+          next = [saved, ...prev.filter((r) => r.id !== saved.id)]
         } else {
           next = [saved, ...prev]
         }
@@ -123,6 +124,7 @@ export default function Page() {
             <div className="relative">
               <RegexBuilder
                 onSave={handleSave}
+                onDelete={handleDelete}
                 editingRegex={editingRegex}
                 onCancelEdit={handleCancelEdit}
               />

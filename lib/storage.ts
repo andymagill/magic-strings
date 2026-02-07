@@ -41,13 +41,13 @@ export function loadSavedRegexes(): SavedRegex[] {
       return []
     }
 
-    // Validate array items have required fields
+    // Validate array items have required fields (name is optional for auto-save)
     return parsed.filter(
       (item): item is SavedRegex =>
         item &&
         typeof item === "object" &&
         typeof item.id === "string" &&
-        typeof item.name === "string" &&
+        (typeof item.name === "string" || item.name === undefined) &&
         Array.isArray(item.criteria) &&
         typeof item.flags === "object" &&
         typeof item.regex === "string" &&

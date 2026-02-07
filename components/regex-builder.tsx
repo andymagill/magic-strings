@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import {
@@ -30,16 +30,16 @@ import { CRITERION_TYPES, QUANTIFIERS } from "@/lib/constants"
 
 interface RegexBuilderProps {
   onSave: (saved: SavedRegex) => void
+  onDelete: (id: string) => void
   editingRegex: SavedRegex | null
   onCancelEdit: () => void
 }
 
 /**
  * RegexBuilder component - Main interface for creating regex patterns
- * Allows users to build regex patterns visually using criteria and flags,
- * test them, and save to their collection
+ * Auto-saves patterns as users build them, removing the need for manual save actions
  */
-export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilderProps) {
+export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: RegexBuilderProps) {
   const [criteria, setCriteria] = useState<RegexCriterion[]>([])
   const [flags, setFlags] = useState<RegexFlags>({
     global: false,
@@ -47,21 +47,87 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
     multiline: false,
     dotAll: false,
   })
-  const [name, setName] = useState("")
   const [copied, setCopied] = useState(false)
   const [testString, setTestString] = useState("")
   const [testResult, setTestResult] = useState<null | { matches: boolean; matchedParts: string[] }>(null)
   const [testError, setTestError] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const currentIdRef = useRef<string>(editingRegex?.id || generateId())
+
+  const regex = buildRegex(criteria, flags)
 
   // Load editing regex when provided
   useEffect(() => {
     if (editingRegex) {
       setCriteria(editingRegex.criteria)
       setFlags(editingRegex.flags)
+      currentIdRef.current = editingRegex.id
     }
   }, [editingRegex])
 
-  const regex = buildRegex(criteria, flags)
+  // Auto-save logic: triggers on criteria/flags changes with debouncing and validity check
+  useEffect(() => {
+    // Clear any pending save
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    // If criteria is empty, delete the saved regex if we're editing one
+    if (criteria.length === 0) {
+      if (editingRegex) {
+        onDelete(editingRegex.id)
+        onCancelEdit()
+      }
+      setSaveError(null)
+      return
+    }
+
+    // Check if regex is valid for saving
+    const isValidRegex = regex !== "//" && !testError
+
+    // Set up auto-save timeout (3 seconds inactivity)
+    saveTimeoutRef.current = setTimeout(() => {
+      if (isValidRegex && criteria.length > 0) {
+        const saved: SavedRegex = {
+          id: currentIdRef.current,
+          criteria,
+          flags,
+          regex,
+          createdAt: editingRegex?.createdAt || Date.now(),
+        }
+        onSave(saved)
+        setSaveError(null)
+      }
+    }, 3000)
+
+    // If regex becomes valid immediately, trigger save without waiting
+    if (isValidRegex && criteria.length > 0 && regex !== "//") {
+      // Shorter timeout for valid changes
+      const quickSaveTimeout = setTimeout(() => {
+        const saved: SavedRegex = {
+          id: currentIdRef.current,
+          criteria,
+          flags,
+          regex,
+          createdAt: editingRegex?.createdAt || Date.now(),
+        }
+        onSave(saved)
+        setSaveError(null)
+      }, 500)
+
+      return () => {
+        clearTimeout(quickSaveTimeout)
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+      }
+    }
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [criteria, flags, regex, testError, onSave, onDelete, editingRegex, onCancelEdit])
 
   const addCriterion = useCallback(() => {
     setCriteria((prev) => [
@@ -89,33 +155,20 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
     setTimeout(() => setCopied(false), 2000)
   }, [regex])
 
-  const handleSave = useCallback(() => {
-    if (!name.trim() || criteria.length === 0) return
-    const saved: SavedRegex = {
-      id: editingRegex?.id || generateId(),
-      name: name.trim(),
-      criteria,
-      flags,
-      regex,
-      createdAt: editingRegex?.createdAt || Date.now(),
-    }
-    onSave(saved)
-    if (!editingRegex) {
-      setCriteria([])
-      setFlags({ global: false, caseInsensitive: false, multiline: false, dotAll: false })
-      setName("")
-    }
-  }, [name, criteria, flags, regex, onSave, editingRegex])
-
   const handleReset = useCallback(() => {
+    // If editing, delete the regex from storage
+    if (editingRegex) {
+      onDelete(editingRegex.id)
+    }
     setCriteria([])
     setFlags({ global: false, caseInsensitive: false, multiline: false, dotAll: false })
-    setName("")
     setTestString("")
     setTestResult(null)
     setTestError(null)
+    setSaveError(null)
+    currentIdRef.current = generateId()
     if (editingRegex) onCancelEdit()
-  }, [editingRegex, onCancelEdit])
+  }, [editingRegex, onCancelEdit, onDelete])
 
   const handleTest = useCallback(() => {
     setTestError(null)
@@ -144,7 +197,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
             <WandIcon className="w-6 h-6 text-accent animate-wand-wave" />
           </div>
           <h2 className="text-xl font-serif font-bold text-foreground">
-            {editingRegex ? "Edit Enchantment" : "Craft Your Spell"}
+            {editingRegex ? "Edit Regex" : "Craft Your Spell"}
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -294,7 +347,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
       <div className="space-y-3">
         <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
           <WandIcon className="w-4 h-4 text-accent" />
-          Enchantment Flags
+          Regex Flags
         </span>
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -351,6 +404,12 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
             )}
           </div>
         </div>
+        {saveError && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+            <p className="font-medium">Error saving pattern</p>
+            <p className="text-xs mt-1">{saveError}</p>
+          </div>
+        )}
       </div>
 
       {/* Test Area */}
@@ -394,7 +453,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
               <div>
                 <p className="font-medium flex items-center gap-2">
                   <SparklesIcon className="w-4 h-4" />
-                  Match found!
+                  Abracradabra, match found!
                 </p>
                 {testResult.matchedParts.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
@@ -407,21 +466,12 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
                 )}
               </div>
             ) : (
-              <p className="font-medium">No match. Adjust your enchantment.</p>
+              <p className="font-medium">No match. Adjust criteria.</p>
             )}
           </div>
         )}
       </div>
 
-      {/* Save Button */}
-      <Button
-        onClick={handleSave}
-        disabled={!name.trim() || criteria.length === 0}
-        className="w-full bg-accent text-accent-foreground hover:bg-accent/80 font-semibold text-base py-5"
-      >
-        <WandIcon className="w-5 h-5 mr-2" />
-        {editingRegex ? "Update Enchantment" : "Seal the Spell"}
-      </Button>
     </div>
   )
 }

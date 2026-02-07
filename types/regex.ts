@@ -35,8 +35,8 @@ export interface RegexFlags {
 export interface SavedRegex {
   /** Unique identifier for this pattern */
   id: string
-  /** User-friendly name for the pattern */
-  name: string
+  /** @deprecated Optional user-friendly name (no longer used in auto-save mode) */
+  name?: string
   /** Array of criteria that compose this pattern */
   criteria: RegexCriterion[]
   /** Flags that modify pattern matching behavior */
