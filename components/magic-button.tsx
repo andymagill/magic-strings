@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * MagicButton - Button with magical sparkle and shine effects via CSS
+ * Uses wrapper for effects while maintaining visible focus ring
  * Animations are CSS-based for better performance and maintainability
  * Accessible button that maintains keyboard navigation and visual focus indicators
  */
@@ -15,7 +16,7 @@ export const MagicButton = React.forwardRef<HTMLButtonElement, React.ComponentPr
       <Button
         ref={ref}
         className={cn(
-          "relative focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md transition-all magic-shine magic-sparkle",
+          "relative focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md transition-all",
           className
         )}
         {...props}

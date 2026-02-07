@@ -77,7 +77,7 @@ export function SavedRegexSidebar({
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <SparklesIcon className="w-4 h-4 text-accent shrink-0 animate-float-sparkle" />
+                        <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
                         <h3 className="font-medium text-foreground truncate">{saved.name}</h3>
                       </div>
                       <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
@@ -126,7 +126,7 @@ export function SavedRegexSidebar({
                         variant="ghost"
                         size="icon"
                         onClick={() => handleCopy(saved.regex, saved.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-accent magic-sparkle"
+                        className="h-8 w-8 text-muted-foreground hover:text-accent"
                       >
                         {copiedId === saved.id ? (
                           <Check className="w-3.5 h-3.5 text-green-400" />
@@ -139,7 +139,7 @@ export function SavedRegexSidebar({
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(saved)}
-                        className="h-8 w-8 text-muted-foreground hover:text-accent magic-sparkle"
+                        className="h-8 w-8 text-muted-foreground hover:text-accent"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                         <span className="sr-only">Edit</span>
@@ -148,7 +148,7 @@ export function SavedRegexSidebar({
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeleteId(saved.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive magic-sparkle"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span className="sr-only">Delete</span>

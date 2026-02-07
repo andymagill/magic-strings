@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * MagicSelectTrigger - Select trigger with magical effects via CSS
+ * Uses wrapper container to properly contain shine effect
  * All animations are CSS-based for better performance
  */
 export const MagicSelectTrigger = React.forwardRef<
@@ -15,7 +16,7 @@ export const MagicSelectTrigger = React.forwardRef<
   return (
     <SelectTrigger
       ref={ref}
-      className={cn("relative magic-shine magic-sparkle magic-spotlight-focus", className)}
+      className={cn("relative", className)}
       {...props}
     >
       {children}
