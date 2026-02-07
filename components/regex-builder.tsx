@@ -19,9 +19,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Input } from "@/components/input"
-import { SelectTrigger, Select } from "@/components/select"
-import { Button } from "@/components/button"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { SelectTrigger, Select } from "@/components/ui/select"
 import { WandIcon, SparklesIcon, HandIcon } from "@/components/icons"
 import { X, Plus, Copy, Check, RotateCcw } from "lucide-react"
 import type { RegexCriterion, RegexFlags, SavedRegex } from "@/types/regex"

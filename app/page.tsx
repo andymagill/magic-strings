@@ -36,10 +36,7 @@ export default function Page() {
         } else {
           next = [saved, ...prev]
         }
-        const error = addSavedRegex(saved)
-        if (error) {
-          console.error("Failed to save regex:", error)
-        }
+        addSavedRegex(saved)
         return next
       })
       setEditingRegex(null)
@@ -50,10 +47,7 @@ export default function Page() {
   const handleDelete = useCallback((id: string) => {
     setSavedRegexes((prev) => {
       const next = prev.filter((r) => r.id !== id)
-      const error = removeSavedRegex(id)
-      if (error) {
-        console.error("Failed to delete regex:", error)
-      }
+      removeSavedRegex(id)
       return next
     })
   }, [])

@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from 'next/font/google'
 
 import './globals.css'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -29,11 +30,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" style={{ fontFamily: `${playfair.variable}, ${inter.variable}` }}>
+    <html 
+      lang="en" 
+      suppressHydrationWarning
+      className={`${playfair.variable} ${inter.variable}`}
+    >
       <body className="font-sans antialiased min-h-screen overflow-x-hidden">
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   )

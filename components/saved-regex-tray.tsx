@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/collapsible"
 import { WandIcon, SparklesIcon, TopHatIcon } from "@/components/icons"
 import { ChevronDown, Pencil, Trash2, Copy, Check } from "lucide-react"
-import type { SavedRegex } from "@/components/regex-builder"
+import type { SavedRegex } from "@/types/regex"
 
 interface SavedRegexTrayProps {
   savedRegexes: SavedRegex[]

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { SparklesIcon, TopHatIcon } from "@/components/icons"
 import { Pencil, Trash2, Copy, Check } from "lucide-react"
-import type { SavedRegex } from "@/components/regex-builder"
+import type { SavedRegex } from "@/types/regex"
 
 interface SavedRegexSidebarProps {
   savedRegexes: SavedRegex[]
