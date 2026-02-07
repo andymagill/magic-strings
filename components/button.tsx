@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 /**
- * MagicButton - Button with magical sparkle and shine effects via CSS
+ * Button - Button with magical sparkle and shine effects via CSS
  * Uses wrapper for effects while maintaining visible focus ring
  * Animations are CSS-based for better performance and maintainability
  * Accessible button that maintains keyboard navigation and visual focus indicators
  */
-export const MagicButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
+export const Button = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, children, ...props }, ref) => {
     return (
       <Button
@@ -27,4 +27,4 @@ export const MagicButton = React.forwardRef<HTMLButtonElement, React.ComponentPr
   }
 )
 
-MagicButton.displayName = "MagicButton"
+Button.displayName = "Button"

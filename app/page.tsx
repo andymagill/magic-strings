@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { RegexBuilder } from "@/components/regex-builder"
 import { SavedRegexSidebar } from "@/components/saved-regex-sidebar"
-import { WandIcon, SparklesIcon } from "@/components/magic-icons"
+import { WandIcon, SparklesIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
 import type { SavedRegex } from "@/types/regex"

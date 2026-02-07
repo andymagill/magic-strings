@@ -8,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { WandIcon, SparklesIcon, TopHatIcon } from "@/components/magic-icons"
+import { WandIcon, SparklesIcon, TopHatIcon } from "@/components/icons"
 import { ChevronDown, Pencil, Trash2, Copy, Check } from "lucide-react"
 import type { SavedRegex } from "@/components/regex-builder"
 

@@ -23,7 +23,7 @@ export function WandIcon({ className = "w-5 h-5" }: { className?: string }) {
   )
 }
 
-export function MagicHandIcon({ className = "w-5 h-5" }: { className?: string }) {
+export function HandIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"

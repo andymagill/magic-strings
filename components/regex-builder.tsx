@@ -1,9 +1,6 @@
 "use client"
 
-import { SelectTrigger } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { useState, useCallback, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import {
@@ -22,10 +19,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { MagicInput } from "@/components/magic-input"
-import { MagicSelectTrigger, Select } from "@/components/magic-select"
-import { MagicButton } from "@/components/magic-button"
-import { WandIcon, SparklesIcon, MagicHandIcon } from "@/components/magic-icons"
+import { Input } from "@/components/input"
+import { SelectTrigger, Select } from "@/components/select"
+import { Button } from "@/components/button"
+import { WandIcon, SparklesIcon, HandIcon } from "@/components/icons"
 import { X, Plus, Copy, Check, RotateCcw } from "lucide-react"
 import type { RegexCriterion, RegexFlags, SavedRegex } from "@/types/regex"
 import { buildRegex, testRegexSafe, generateId } from "@/lib/regex-utils"
@@ -188,7 +185,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
           <SparklesIcon className="w-4 h-4 text-accent" />
           Spell Name
         </label>
-        <MagicInput
+        <Input
           id="spell-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -201,7 +198,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <MagicHandIcon className="w-4 h-4 text-accent" />
+          <HandIcon className="w-4 h-4 text-accent" />
             Incantation Criteria
           </span>
           <Badge variant="outline" className="text-accent border-accent/30 text-xs">
@@ -211,7 +208,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
 
         {criteria.length === 0 && (
           <div className="rounded-xl border border-dashed border-border/50 p-8 text-center">
-            <MagicHandIcon className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+            <HandIcon className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground/60">
               No criteria yet. Add your first rule to begin the incantation.
             </p>
@@ -234,9 +231,9 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
                   value={c.type}
                   onValueChange={(val) => updateCriterion(c.id, "type", val)}
                 >
-                  <MagicSelectTrigger className="bg-card border-border text-foreground">
+                  <SelectTrigger className="bg-card border-border text-foreground">
                     <SelectValue />
-                  </MagicSelectTrigger>
+                  </SelectTrigger>
                   <SelectContent className="bg-card border-border">
                     {CRITERION_TYPES.map((ct) => (
                       <SelectItem key={ct.value} value={ct.value}>
@@ -248,7 +245,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
 
                 {/* Value */}
                 {needsValue(c.type) ? (
-                  <MagicInput
+                  <Input
                     value={c.value}
                     onChange={(e) => updateCriterion(c.id, "value", e.target.value)}
                     placeholder={
@@ -272,9 +269,9 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
                     value={c.quantifier}
                     onValueChange={(val) => updateCriterion(c.id, "quantifier", val)}
                   >
-                    <MagicSelectTrigger className="bg-card border-border text-foreground">
+                    <SelectTrigger className="bg-card border-border text-foreground">
                       <SelectValue />
-                    </MagicSelectTrigger>
+                    </SelectTrigger>
                     <SelectContent className="bg-card border-border">
                       {QUANTIFIERS.map((q) => (
                         <SelectItem key={q.value} value={q.value}>
@@ -299,14 +296,14 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
           ))}
         </div>
 
-        <MagicButton
+        <Button
           variant="outline"
           onClick={addCriterion}
           className="w-full border-dashed border-border/50 text-muted-foreground hover:text-accent hover:border-accent/30 bg-transparent"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Criterion
-        </MagicButton>
+        </Button>
       </div>
 
       {/* Flags */}
@@ -376,7 +373,7 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
       <div className="space-y-3">
         <span className="text-sm font-medium text-muted-foreground">Test Your Spell</span>
         <div className="flex gap-2">
-          <MagicInput
+          <Input
             value={testString}
             onChange={(e) => {
               setTestString(e.target.value)
@@ -386,14 +383,14 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
             placeholder="Enter test string..."
             className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground/40"
           />
-          <MagicButton
+          <Button
             onClick={handleTest}
             disabled={!regex || regex === "//"}
             className="bg-accent text-accent-foreground hover:bg-accent/80 shrink-0"
           >
             <WandIcon className="w-4 h-4 mr-1" />
             Test
-          </MagicButton>
+          </Button>
         </div>
         {testError && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
@@ -433,14 +430,14 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
       </div>
 
       {/* Save Button */}
-      <MagicButton
+      <Button
         onClick={handleSave}
         disabled={!name.trim() || criteria.length === 0}
         className="w-full bg-accent text-accent-foreground hover:bg-accent/80 font-semibold text-base py-5"
       >
         <WandIcon className="w-5 h-5 mr-2" />
         {editingRegex ? "Update Enchantment" : "Seal the Spell"}
-      </MagicButton>
+      </Button>
     </div>
   )
 }

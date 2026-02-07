@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 /**
- * MagicInput - Input field with magical shine, sparkle, and spotlight effects
+ * Input - Input field with magical shine, sparkle, and spotlight effects
  * Uses nested wrappers: outer for sparkle/spotlight (overflow visible), 
  * inner for shine (overflow hidden) since inputs are replaced elements
  * Accessible input that maintains keyboard navigation and visible focus indicators
  */
-export const MagicInput = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+export const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
   ({ className, ...props }, ref) => {
     return (
       <Input
@@ -25,4 +25,4 @@ export const MagicInput = React.forwardRef<HTMLInputElement, React.ComponentProp
   }
 )
 
-MagicInput.displayName = "MagicInput"
+Input.displayName = "Input"
