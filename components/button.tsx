@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Button } from "@/components/ui/button"
+import { Button as UIButton } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 /**
@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils"
  * Animations are CSS-based for better performance and maintainability
  * Accessible button that maintains keyboard navigation and visual focus indicators
  */
-export const Button = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
+export const Button = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof UIButton>>(
   ({ className, children, ...props }, ref) => {
     return (
-      <Button
+      <UIButton
         ref={ref}
         className={cn(
           "relative focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md transition-all",
@@ -22,7 +22,7 @@ export const Button = React.forwardRef<HTMLButtonElement, React.ComponentProps<t
         {...props}
       >
         {children}
-      </Button>
+      </UIButton>
     )
   }
 )

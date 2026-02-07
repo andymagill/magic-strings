@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Input } from "@/components/ui/input"
+import { Input as UIInput } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 /**
@@ -10,10 +10,10 @@ import { cn } from "@/lib/utils"
  * inner for shine (overflow hidden) since inputs are replaced elements
  * Accessible input that maintains keyboard navigation and visible focus indicators
  */
-export const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof Input>>(
+export const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<typeof UIInput>>(
   ({ className, ...props }, ref) => {
     return (
-      <Input
+      <UIInput
         ref={ref}
         className={cn(
           "focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background transition-all rounded-md w-full",

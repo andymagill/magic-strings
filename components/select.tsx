@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Select, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select"
+import { Select, SelectTrigger as UISelectTrigger, SelectValue, SelectContent } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
 /**
@@ -10,17 +10,17 @@ import { cn } from "@/lib/utils"
  * All animations are CSS-based for better performance
  */
 export const SelectTrigger = React.forwardRef<
-  React.ElementRef<typeof SelectTrigger>,
-  React.ComponentProps<typeof SelectTrigger>
+  React.ElementRef<typeof UISelectTrigger>,
+  React.ComponentProps<typeof UISelectTrigger>
 >(({ className, children, ...props }, ref) => {
   return (
-    <SelectTrigger
+    <UISelectTrigger
       ref={ref}
       className={cn("relative", className)}
       {...props}
     >
       {children}
-    </SelectTrigger>
+    </UISelectTrigger>
   )
 })
 
