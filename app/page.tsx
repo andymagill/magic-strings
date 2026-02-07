@@ -63,6 +63,10 @@ export default function Page() {
     setEditingRegex(null)
   }, [])
 
+  const handleNew = useCallback(() => {
+    handleCancelEdit()
+  }, [handleCancelEdit])
+
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -147,6 +151,7 @@ export default function Page() {
         savedRegexes={savedRegexes}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onNew={handleNew}
         open={sidebarOpen}
         onOpenChange={setSidebarOpen}
       />

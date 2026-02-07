@@ -15,13 +15,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { SparklesIcon, TopHatIcon } from "@/components/icons"
-import { Pencil, Trash2, Copy, Check } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 import type { SavedRegex } from "@/types/regex"
 
 interface SavedRegexSidebarProps {
   savedRegexes: SavedRegex[]
   onEdit: (regex: SavedRegex) => void
   onDelete: (id: string) => void
+  onNew: () => void
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -30,17 +31,11 @@ export function SavedRegexSidebar({
   savedRegexes,
   onEdit,
   onDelete,
+  onNew,
   open,
   onOpenChange,
 }: SavedRegexSidebarProps) {
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-
-  const handleCopy = (regex: string, id: string) => {
-    navigator.clipboard.writeText(regex)
-    setCopiedId(id)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
 
   const confirmDelete = (id: string) => {
     onDelete(id)
@@ -59,6 +54,14 @@ export function SavedRegexSidebar({
               {savedRegexes.length}
             </Badge>
           </div>
+
+          <Button
+            onClick={onNew}
+            variant="outline"
+            className="w-full mb-4 border-accent/30 text-accent hover:bg-accent/10"
+          >
+            + New
+          </Button>
 
           <div className="space-y-3">
             {savedRegexes.length === 0 ? (
@@ -83,33 +86,6 @@ export function SavedRegexSidebar({
                       <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
                         {saved.regex}
                       </code>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {saved.criteria.slice(0, 3).map((c) => (
-                          <Badge
-                            key={c.id}
-                            variant="outline"
-                            className="text-xs text-muted-foreground border-border/50"
-                          >
-                            {c.type.replace(/_/g, " ")}
-                          </Badge>
-                        ))}
-                        {saved.criteria.length > 3 && (
-                          <Badge variant="outline" className="text-xs text-muted-foreground border-border/50">
-                            +{saved.criteria.length - 3}
-                          </Badge>
-                        )}
-                        {(saved.flags.global ||
-                          saved.flags.caseInsensitive ||
-                          saved.flags.multiline ||
-                          saved.flags.dotAll) && (
-                          <Badge className="text-xs bg-accent/10 text-accent border-accent/20">
-                            {saved.flags.global && "g"}
-                            {saved.flags.caseInsensitive && "i"}
-                            {saved.flags.multiline && "m"}
-                            {saved.flags.dotAll && "s"}
-                          </Badge>
-                        )}
-                      </div>
                       <p className="text-xs text-muted-foreground/40 mt-2">
                         {new Date(saved.createdAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -122,19 +98,6 @@ export function SavedRegexSidebar({
                     </div>
 
                     <div className="flex flex-col gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleCopy(saved.regex, saved.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-accent"
-                      >
-                        {copiedId === saved.id ? (
-                          <Check className="w-3.5 h-3.5 text-green-400" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                        <span className="sr-only">Copy regex</span>
-                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -176,6 +139,19 @@ export function SavedRegexSidebar({
           </SheetHeader>
 
           <div className="mt-6 space-y-3">
+            <Button
+              onClick={() => {
+                onNew()
+                onOpenChange(false)
+              }}
+              variant="outline"
+              className="w-full border-accent/30 text-accent hover:bg-accent/10"
+            >
+              + New
+            </Button>
+          </div>
+
+          <div className="mt-6 space-y-3">
             {savedRegexes.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border/30 p-8 text-center">
                 <SparklesIcon className="w-8 h-8 text-muted-foreground/20 mx-auto mb-2" />
@@ -194,41 +170,7 @@ export function SavedRegexSidebar({
                       <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
                       <h3 className="font-medium text-foreground text-sm font-mono break-all">{saved.regex}</h3>
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                      {saved.criteria.slice(0, 3).map((c) => (
-                        <Badge
-                          key={c.id}
-                          variant="outline"
-                          className="text-xs text-muted-foreground border-border/50"
-                        >
-                          {c.type.replace(/_/g, " ")}
-                        </Badge>
-                      ))}
-                      {saved.criteria.length > 3 && (
-                        <Badge variant="outline" className="text-xs text-muted-foreground border-border/50">
-                          +{saved.criteria.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleCopy(saved.regex, saved.id)}
-                        className="flex-1 text-muted-foreground hover:text-accent"
-                      >
-                        {copiedId === saved.id ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 mr-1 text-green-400" />
-                            Copied
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5 mr-1" />
-                            Copy
-                          </>
-                        )}
-                      </Button>
+                    <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="sm"

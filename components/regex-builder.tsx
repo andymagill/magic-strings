@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SelectTrigger, Select } from "@/components/ui/select"
 import { WandIcon, SparklesIcon, HandIcon } from "@/components/icons"
-import { X, Plus, Copy, Check, RotateCcw } from "lucide-react"
+import { X, Plus, Copy, Check, Trash2 } from "lucide-react"
 import type { RegexCriterion, RegexFlags, SavedRegex } from "@/types/regex"
 import { buildRegex, testRegexSafe, generateId } from "@/lib/regex-utils"
 import { CRITERION_TYPES, QUANTIFIERS } from "@/lib/constants"
@@ -208,22 +208,24 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           )}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                <RotateCcw className="w-4 h-4" />
-                <span className="sr-only">Reset</span>
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                <Trash2 className="w-4 h-4" />
+                <span className="sr-only">Delete</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle className="font-serif">Clear the magic stage?</AlertDialogTitle>
+                <AlertDialogTitle className="font-serif">Delete this spell?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will reset all criteria, flags, and inputs. Your saved spells in the Spellbook will not be affected.
+                  {editingRegex
+                    ? "This enchantment will be permanently removed from your Spellbook. This action cannot be undone."
+                    : "This will clear all criteria, flags, and inputs. You can start creating a new spell."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Keep Working</AlertDialogCancel>
-                <AlertDialogAction onClick={handleReset} className="bg-accent text-accent-foreground hover:bg-accent/80">
-                  Clear Stage
+                <AlertDialogCancel>Keep Spell</AlertDialogCancel>
+                <AlertDialogAction onClick={handleReset} className="bg-destructive text-destructive-foreground hover:bg-destructive/80">
+                  Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

@@ -75,30 +75,6 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
                   <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
                     {saved.regex}
                   </code>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {saved.criteria.map((c) => (
-                      <Badge
-                        key={c.id}
-                        variant="outline"
-                        className="text-xs text-muted-foreground border-border/50"
-                      >
-                        {c.type.replace(/_/g, " ")}
-                        {c.value ? `: ${c.value}` : ""}
-                      </Badge>
-                    ))}
-                    {saved.flags.global && (
-                      <Badge className="text-xs bg-accent/10 text-accent border-accent/20">g</Badge>
-                    )}
-                    {saved.flags.caseInsensitive && (
-                      <Badge className="text-xs bg-accent/10 text-accent border-accent/20">i</Badge>
-                    )}
-                    {saved.flags.multiline && (
-                      <Badge className="text-xs bg-accent/10 text-accent border-accent/20">m</Badge>
-                    )}
-                    {saved.flags.dotAll && (
-                      <Badge className="text-xs bg-accent/10 text-accent border-accent/20">s</Badge>
-                    )}
-                  </div>
                   <p className="text-xs text-muted-foreground/40 mt-2">
                     {new Date(saved.createdAt).toLocaleDateString("en-US", {
                       month: "short",
