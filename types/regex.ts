@@ -24,7 +24,6 @@ export interface RegexFlags {
  */
 export interface SavedRegex {
   id: string
-  name: string
   criteria: RegexCriterion[]
   flags: RegexFlags
   regex: string

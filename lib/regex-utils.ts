@@ -24,7 +24,7 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
   let pattern = ""
 
   for (const c of criteria) {
-    let part = ""
+    let part: string
 
     // Transform criterion type to regex pattern
     switch (c.type) {

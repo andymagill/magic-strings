@@ -58,7 +58,6 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
     if (editingRegex) {
       setCriteria(editingRegex.criteria)
       setFlags(editingRegex.flags)
-      setName(editingRegex.name)
     }
   }, [editingRegex])
 
@@ -177,21 +176,6 @@ export function RegexBuilder({ onSave, editingRegex, onCancelEdit }: RegexBuilde
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </div>
-
-      {/* Spell Name */}
-      <div className="space-y-2">
-        <label htmlFor="spell-name" className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <SparklesIcon className="w-4 h-4 text-accent" />
-          Spell Name
-        </label>
-        <Input
-          id="spell-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Name your enchantment..."
-          className="bg-secondary/50 border-border focus-visible:ring-accent text-foreground placeholder:text-muted-foreground/50"
-        />
       </div>
 
       {/* Criteria List */}
