@@ -3,12 +3,13 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 
 import './globals.css'
+import { ErrorBoundary } from '@/components/error-boundary'
 
-const _playfair = Playfair_Display({
+const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-serif',
 })
-const _inter = Inter({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
 })
@@ -28,8 +29,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased min-h-screen overflow-x-hidden">{children}</body>
+    <html lang="en" style={{ fontFamily: `${playfair.variable}, ${inter.variable}` }}>
+      <body className="font-sans antialiased min-h-screen overflow-x-hidden">
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
+      </body>
     </html>
   )
 }

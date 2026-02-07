@@ -85,7 +85,6 @@ magic-strings/
 │   └── ui/                      # Shadcn/ui component library
 │
 ├── hooks/
-│   ├── use-magic-effects.ts     # Shared magic effects logic (sparkle, shine)
 │   └── use-toast.ts             # Toast notification hook
 │
 ├── lib/
@@ -148,7 +147,7 @@ Business logic is separated from UI components:
 - **`lib/regex-utils.ts`**: Pure functions for building regex and testing patterns
 - **`lib/storage.ts`**: Abstraction over localStorage with error handling
 - **`lib/constants.ts`**: Configuration constants (criterion types, quantifiers)
-- **`hooks/use-magic-effects.ts`**: Shared animation logic
+- **`app/globals.css`**: CSS-based animations for magic effects (sparkle, shine, spotlight)
 - **Components**: UI presentation and user interaction
 
 ### Debugging
@@ -221,29 +220,26 @@ if (error) {
 }
 ```
 
-### Custom Hooks
+### CSS-Based Animations
 
-#### `useMagicEffects(options): MagicEffectState`
-Manages sparkle, shine, and spotlight animations with proper cleanup.
+Magic Strings uses pure CSS animations for effects (sparkle, shine, spotlight) for better performance and maintainability.
+
+Magic components accept effect flags that apply CSS classes:
 
 ```typescript
-import { useMagicEffects } from '@/hooks/use-magic-effects'
-
-const {
-  sparkles,      // Array of sparkle IDs currently animating
-  isShining,     // Whether shine effect is active
-  isFocused,     // Whether element has focus
-  handleFocus,   // Focus event handler factory
-  handleBlur,    // Blur event handler factory
-  handleClick,   // Click event handler factory
-  addSparkle,    // Manual sparkle trigger
-  triggerShine,  // Manual shine trigger
-} = useMagicEffects({
-  enableSparkle: true,
-  enableShine: true,
-  enableSpotlight: true,
-})
+interface MagicComponentProps {
+  enableShine?: boolean      // Adds gradient shine on hover/focus
+  enableSparkle?: boolean    // Adds ✨ emoji pop animation on click
+  enableSpotlight?: boolean  // Adds radial glow effect on focus
+}
 ```
+
+**Available CSS Classes**:
+- `.magic-shine`: Gradient shine effect
+- `.magic-sparkle`: Sparkle pop emoji animation
+- `.magic-spotlight-focus`: Radial spotlight glow
+
+All animations are triggered automatically via CSS pseudo-classes (`:hover`, `:focus`, `:active`) with no JavaScript state management needed.
 
 ---
 

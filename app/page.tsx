@@ -2,36 +2,27 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { SpotlightBackground } from "@/components/spotlight-background"
-import { RegexBuilder, type SavedRegex } from "@/components/regex-builder"
+import { RegexBuilder } from "@/components/regex-builder"
 import { SavedRegexSidebar } from "@/components/saved-regex-sidebar"
 import { WandIcon, SparklesIcon } from "@/components/magic-icons"
 import { Button } from "@/components/ui/button"
 import { BookOpen } from "lucide-react"
+import type { SavedRegex } from "@/types/regex"
+import { loadSavedRegexes, addSavedRegex, removeSavedRegex } from "@/lib/storage"
 
-const STORAGE_KEY = "magic-strings-saved"
-
-function loadSaved(): SavedRegex[] {
-  if (typeof window === "undefined") return []
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-function persistSaved(regexes: SavedRegex[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(regexes))
-}
-
+/**
+ * Home page component
+ * Main entry point for the Magic Strings regex builder application
+ */
 export default function Page() {
   const [savedRegexes, setSavedRegexes] = useState<SavedRegex[]>([])
   const [editingRegex, setEditingRegex] = useState<SavedRegex | null>(null)
   const [mounted, setMounted] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  // Load saved patterns on mount
   useEffect(() => {
-    setSavedRegexes(loadSaved())
+    setSavedRegexes(loadSavedRegexes())
     setMounted(true)
   }, [])
 
@@ -46,7 +37,10 @@ export default function Page() {
         } else {
           next = [saved, ...prev]
         }
-        persistSaved(next)
+        const error = addSavedRegex(saved)
+        if (error) {
+          console.error("Failed to save regex:", error)
+        }
         return next
       })
       setEditingRegex(null)
@@ -57,7 +51,10 @@ export default function Page() {
   const handleDelete = useCallback((id: string) => {
     setSavedRegexes((prev) => {
       const next = prev.filter((r) => r.id !== id)
-      persistSaved(next)
+      const error = removeSavedRegex(id)
+      if (error) {
+        console.error("Failed to delete regex:", error)
+      }
       return next
     })
   }, [])

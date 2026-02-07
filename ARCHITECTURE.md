@@ -11,8 +11,9 @@ Magic Strings follows a **layered architecture** with clear separation of concer
 │      UI Layer (React Components)        │
 │  - RegexBuilder, MagicButton, etc.      │
 ├─────────────────────────────────────────┤
-│      Logic Layer (Hooks & Utils)        │
-│  - useMagicEffects, buildRegex, etc.    │
+│      Logic Layer (Utils & CSS)          │
+│  - buildRegex, regex utilities          │
+│  - CSS animations (no JS state)         │
 ├─────────────────────────────────────────┤
 │      Persistence Layer (Storage)        │
 │  - localStorage abstraction              │
@@ -36,12 +37,12 @@ Magic Strings follows a **layered architecture** with clear separation of concer
   - ~280 lines (monolithic, could be further decomposed)
 
 - **`MagicButton.tsx`**: Reusable button with sparkle effects
-  - Uses `useMagicEffects` hook for animations
+  - CSS-based animations (`.magic-sparkle`, `.magic-shine`)
   - Maintains accessibility (focus rings, keyboard support)
-  - Delegates effect logic to hook
+  - No animation state management needed
 
 - **`MagicInput.tsx`**: Reusable input with shine/sparkle/spotlight effects
-  - Uses `useMagicEffects` hook
+  - CSS-based animations via utility classes
   - Adds visual feedback on interaction
   - Accessible keyboard focus support
 
@@ -54,34 +55,9 @@ Magic Strings follows a **layered architecture** with clear separation of concer
   - Creates atmospheric effect
   - No business logic
 
-**Pattern**: Components are **presentational** - they receive data as props and call callbacks for actions. Business logic is extracted to hooks and utilities.
+**Pattern**: Components are **presentational** - they receive data as props and call callbacks for actions. Visual effects are purely CSS-driven and don't require JavaScript state management.
 
 ### 2. Logic Layer (Hooks & Utils)
-
-#### Custom Hooks (`hooks/`)
-
-**`use-magic-effects.ts`**
-- Centralizes sparkle/shine/spotlight animation logic
-- Manages timeouts with proper cleanup
-- Prevents memory leaks on unmount
-- Used by MagicButton and MagicInput
-
-```typescript
-const {
-  sparkles,        // Animated sparkle elements
-  isShining,       // Shine animation state
-  isFocused,       // Focus state
-  handleFocus,     // Event handler factory
-  handleClick,     // Event handler factory
-  addSparkle,      // Manual sparkle trigger
-} = useMagicEffects({ enableSparkle: true })
-```
-
-**Benefits**:
-- Eliminates duplication between MagicButton and MagicInput
-- Centralizes cleanup logic (timeout management)
-- Easier to test and modify animations
-
 #### Utilities (`lib/`)
 
 **`regex-utils.ts`**
@@ -250,20 +226,21 @@ User enters test string
 - `page.tsx` imports from `lib/storage.ts`
 - Simple to understand each module's responsibility
 
-### 2. **Shared Effect Logic with Custom Hooks**
+### 2. **CSS-Based Visual Effects**
 
-**Decision**: Extract animation logic to `use-magic-effects.ts` hook
+**Decision**: Implement all magical animations (sparkle, shine, spotlight) using pure CSS classes instead of React state
 
 **Rationale**:
-- Prevents duplication between MagicButton and MagicInput
-- Centralizes timeout cleanup (prevents memory leaks)
-- Easier to modify all animations in one place
-- Follows React best practices
+- Better performance (GPU acceleration, no JavaScript overhead)
+- Simpler component code (no state management needed)
+- Easier to maintain (edit in one place - globals.css)
+- CSS-in-JS remains an option for dynamic styles
 
 **Result**:
-- MagicButton and MagicInput use the same hook
-- Consistent animation behavior
-- Testable animation logic
+- MagicButton, MagicInput, MagicSelect use `.magic-shine`, `.magic-sparkle`, `.magic-spotlight-focus` classes
+- Animations triggered by CSS pseudo-classes (`:hover`, `:focus`, `:active`)
+- No animation state in React - completely CSS-driven
+- Reduced component complexity and bundle size
 
 ### 3. **Defensive Storage Layer**
 
@@ -380,7 +357,6 @@ All other code remains unchanged!
 ---
 
 ## Testing Strategy (Future)
-
 Recommended testing approach:
 
 ```
@@ -390,14 +366,10 @@ Unit Tests
 │   ├── buildRegex tests
 │   └── testRegexSafe tests
 │
-├── lib/storage.ts
-│   ├── loadSavedRegexes tests
-│   ├── addSavedRegex tests
-│   └── Error handling tests
-│
-└── hooks/use-magic-effects.ts
-    ├── Cleanup tests
-    └── State management tests
+└── lib/storage.ts
+    ├── loadSavedRegexes tests
+    ├── addSavedRegex tests
+    └── Error handling tests
 
 Integration Tests
 ├── RegexBuilder component
