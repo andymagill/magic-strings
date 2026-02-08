@@ -133,11 +133,22 @@ export default function Page() {
           </section>
 
           {/* Footer decoration */}
-          <footer className="text-center pt-6">
+          <footer className="text-center pt-6 space-y-3">
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <SparklesIcon className="w-4 h-4" />
               <span className="text-xs font-serif italic">Every great regex starts with a little magic</span>
               <SparklesIcon className="w-4 h-4" />
+            </div>
+            <div className="text-xs text-muted-foreground/70">
+              Made by{" "}
+              <a
+                href="https://magill.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/80 underline transition-colors"
+              >
+                Andrew Magill
+              </a>
             </div>
           </footer>
         </div>
