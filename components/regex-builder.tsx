@@ -332,7 +332,8 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
 
         <Button
           onClick={addCriterion}
-          className="w-full bg-yellow-400 text-black hover:bg-white disabled:bg-slate-300 disabled:text-slate-800 disabled:cursor-not-allowed"
+          variant="accent"
+          className="w-full"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Criterion

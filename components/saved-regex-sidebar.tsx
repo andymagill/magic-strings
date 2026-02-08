@@ -57,7 +57,8 @@ export function SavedRegexSidebar({
 
           <Button
             onClick={onNew}
-            className="w-full mb-4 bg-yellow-400 text-black hover:bg-white disabled:bg-slate-300 disabled:text-slate-800 disabled:cursor-not-allowed"
+            variant="accent"
+            className="w-full mb-4"
           >
             + New
           </Button>
@@ -142,8 +143,8 @@ export function SavedRegexSidebar({
                 onNew()
                 onOpenChange(false)
               }}
-              variant="outline"
-              className="w-full border-accent/30 text-accent hover:bg-accent/10"
+              variant="accent"
+              className="w-full"
             >
               + New
             </Button>
