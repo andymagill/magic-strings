@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Particle } from "@/lib/particle-utils";
 import { generateFireworkParticles } from "@/lib/particle-utils";
 
