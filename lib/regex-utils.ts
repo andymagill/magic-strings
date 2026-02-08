@@ -1,5 +1,5 @@
-import { RegexCriterion, RegexFlags } from "@/types/regex"
-import { REGEX_TIMEOUT_MS } from "@/lib/constants"
+import { RegexCriterion, RegexFlags } from "@/types/regex";
+import { REGEX_TIMEOUT_MS } from "@/lib/constants";
 
 /**
  * Escapes special regex characters to treat them as literals
@@ -7,7 +7,7 @@ import { REGEX_TIMEOUT_MS } from "@/lib/constants"
  * @returns Escaped string safe for use in regex patterns
  */
 export function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**
@@ -20,26 +20,26 @@ export function escapeRegex(str: string): string {
  */
 function needsGrouping(type: string, value: string): boolean {
   // Single-character patterns that don't need grouping
-  const singleCharTypes = ["digit", "word_char", "whitespace", "any_char"]
-  if (singleCharTypes.includes(type)) return false
+  const singleCharTypes = ["digit", "word_char", "whitespace", "any_char"];
+  if (singleCharTypes.includes(type)) return false;
 
   // Character classes already have delimiters
-  const classTypes = ["letter_upper", "letter_lower", "custom_class", "not"]
-  if (classTypes.includes(type)) return false
+  const classTypes = ["letter_upper", "letter_lower", "custom_class", "not"];
+  if (classTypes.includes(type)) return false;
 
   // Already grouped patterns
-  if (type === "group" || type === "or") return false
+  if (type === "group" || type === "or") return false;
 
   // starts_with at the beginning doesn't need grouping (it's first)
   // exact also doesn't need grouping as it's a complete pattern
-  if (type === "starts_with" || type === "exact") return false
+  if (type === "starts_with" || type === "exact") return false;
 
   // Multi-character patterns need grouping (including ends_with)
   if (type === "contains" || type === "literal" || type === "ends_with") {
-    return value.length > 1
+    return value.length > 1;
   }
 
-  return false
+  return false;
 }
 
 /**
@@ -51,7 +51,7 @@ function needsGrouping(type: string, value: string): boolean {
  * @returns The pattern, wrapped in (?:...) if shouldGroup is true
  */
 function wrapInGroup(part: string, shouldGroup: boolean): string {
-  return shouldGroup ? `(?:${part})` : part
+  return shouldGroup ? `(?:${part})` : part;
 }
 
 /**
@@ -64,117 +64,117 @@ function wrapInGroup(part: string, shouldGroup: boolean): string {
  * @returns Regex string in format /pattern/flags or empty string
  */
 export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): string {
-  if (criteria.length === 0) return ""
+  if (criteria.length === 0) return "";
 
-  let pattern = ""
-  const hasMultipleCriteria = criteria.length > 1
+  let pattern = "";
+  const hasMultipleCriteria = criteria.length > 1;
 
   for (let i = 0; i < criteria.length; i++) {
-    const c = criteria[i]
-    const isNotFirst = i > 0
-    let part: string
+    const c = criteria[i];
+    const isNotFirst = i > 0;
+    let part: string;
     // Store anchor separately to prevent it from being wrapped in grouping parentheses
-    let anchor = ""
+    let anchor = "";
 
     // Transform criterion type to regex pattern
     switch (c.type) {
       case "starts_with":
-        part = `^${escapeRegex(c.value)}`
-        break
+        part = `^${escapeRegex(c.value)}`;
+        break;
       case "ends_with":
         // Keep anchor separate so we can wrap just the content
-        part = escapeRegex(c.value)
-        anchor = "$"
-        break
+        part = escapeRegex(c.value);
+        anchor = "$";
+        break;
       case "contains":
-        part = escapeRegex(c.value)
-        break
+        part = escapeRegex(c.value);
+        break;
       case "exact":
-        part = `^${escapeRegex(c.value)}$`
-        break
+        part = `^${escapeRegex(c.value)}$`;
+        break;
       case "digit":
-        part = "\\d"
-        break
+        part = "\\d";
+        break;
       case "word_char":
-        part = "\\w"
-        break
+        part = "\\w";
+        break;
       case "whitespace":
-        part = "\\s"
-        break
+        part = "\\s";
+        break;
       case "any_char":
-        part = "."
-        break
+        part = ".";
+        break;
       case "letter_upper":
-        part = "[A-Z]"
-        break
+        part = "[A-Z]";
+        break;
       case "letter_lower":
-        part = "[a-z]"
-        break
+        part = "[a-z]";
+        break;
       case "custom_class":
-        part = `[${c.value}]`
-        break
+        part = `[${c.value}]`;
+        break;
       case "group":
-        part = `(${c.value})`
-        break
+        part = `(${c.value})`;
+        break;
       case "or":
         part = c.value
           .split(",")
           .map((s) => escapeRegex(s.trim()))
-          .join("|")
-        part = `(?:${part})`
-        break
+          .join("|");
+        part = `(?:${part})`;
+        break;
       case "not":
-        part = `[^${c.value}]`
-        break
+        part = `[^${c.value}]`;
+        break;
       case "literal":
-        part = escapeRegex(c.value)
-        break
+        part = escapeRegex(c.value);
+        break;
       default:
-        part = escapeRegex(c.value)
+        part = escapeRegex(c.value);
     }
 
     // Determine if this part needs grouping before applying quantifiers
     // All three conditions must be true: multiple criteria exist, this is not the first, and the type needs grouping
-    const shouldGroup = hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value)
-    
+    const shouldGroup = hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value);
+
     // Wrap in group if needed (before quantifiers are applied)
     if (shouldGroup) {
-      part = wrapInGroup(part, true)
+      part = wrapInGroup(part, true);
     }
 
     // Apply quantifier (skip for anchored patterns)
     if (!["starts_with", "ends_with", "exact"].includes(c.type)) {
       switch (c.quantifier) {
         case "zero_or_more":
-          part += "*"
-          break
+          part += "*";
+          break;
         case "one_or_more":
-          part += "+"
-          break
+          part += "+";
+          break;
         case "optional":
-          part += "?"
-          break
+          part += "?";
+          break;
         case "lazy":
-          part += "*?"
-          break
+          part += "*?";
+          break;
         case "custom":
           // Custom quantifier should be in value like {2,5}
-          break
+          break;
       }
     }
 
     // Add the part and any anchor
-    pattern += part + anchor
+    pattern += part + anchor;
   }
 
   // Construct flag string
-  let flagStr = ""
-  if (flags.global) flagStr += "g"
-  if (flags.caseInsensitive) flagStr += "i"
-  if (flags.multiline) flagStr += "m"
-  if (flags.dotAll) flagStr += "s"
+  let flagStr = "";
+  if (flags.global) flagStr += "g";
+  if (flags.caseInsensitive) flagStr += "i";
+  if (flags.multiline) flagStr += "m";
+  if (flags.dotAll) flagStr += "s";
 
-  return flagStr ? `/${pattern}/${flagStr}` : `/${pattern}/`
+  return flagStr ? `/${pattern}/${flagStr}` : `/${pattern}/`;
 }
 
 /**
@@ -190,76 +190,74 @@ export function testRegexSafe(
   testString: string
 ): { matches: boolean; matchedParts: string[]; error?: string } {
   if (!pattern || pattern === "//") {
-    return { matches: false, matchedParts: [] }
+    return { matches: false, matchedParts: [] };
   }
 
   try {
-    const patternMatch = pattern.match(/^\/(.+)\/([gimsuy]*)$/)
+    const patternMatch = pattern.match(/^\/(.+)\/([gimsuy]*)$/);
     if (!patternMatch) {
-      return { matches: false, matchedParts: [], error: "Invalid regex pattern format" }
+      return { matches: false, matchedParts: [], error: "Invalid regex pattern format" };
     }
 
     // Test with timeout wrapper to prevent catastrophic backtracking
-    let timedOut = false
+    let timedOut = false;
     const timeoutId = setTimeout(() => {
-      timedOut = true
-    }, REGEX_TIMEOUT_MS)
+      timedOut = true;
+    }, REGEX_TIMEOUT_MS);
 
     try {
-      const re = new RegExp(patternMatch[1], patternMatch[2])
-      
+      const re = new RegExp(patternMatch[1], patternMatch[2]);
+
       // Check timeout
       if (timedOut) {
         return {
           matches: false,
           matchedParts: [],
           error: "Regex took too long to execute (possible catastrophic backtracking)",
-        }
+        };
       }
 
-      const testMatches = re.test(testString)
+      const testMatches = re.test(testString);
 
       if (timedOut) {
         return {
           matches: false,
           matchedParts: [],
           error: "Regex took too long to execute (possible catastrophic backtracking)",
-        }
+        };
       }
 
       // Get matches respecting user's flag selection
-      const matchResult = testString.match(
-        new RegExp(patternMatch[1], patternMatch[2])
-      )
+      const matchResult = testString.match(new RegExp(patternMatch[1], patternMatch[2]));
 
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
 
       // Handle different return types based on global flag
-      let matchedParts: string[] = []
+      let matchedParts: string[] = [];
       if (matchResult) {
         // With global flag: returns array of all matches
         // Without global flag: returns match object with captured groups
         if (patternMatch[2].includes("g")) {
-          matchedParts = matchResult as string[]
+          matchedParts = matchResult as string[];
         } else {
           // For non-global, return just the matched string (first element)
-          matchedParts = [matchResult[0]]
+          matchedParts = [matchResult[0]];
         }
       }
 
       return {
         matches: testMatches,
         matchedParts,
-      }
+      };
     } finally {
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
     }
   } catch (error) {
     return {
       matches: false,
       matchedParts: [],
       error: error instanceof Error ? error.message : "Unknown error",
-    }
+    };
   }
 }
 
@@ -268,5 +266,5 @@ export function testRegexSafe(
  * @returns Random alphanumeric string
  */
 export function generateId(): string {
-  return Math.random().toString(36).substring(2, 9)
+  return Math.random().toString(36).substring(2, 9);
 }

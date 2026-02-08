@@ -1,5 +1,5 @@
-import { SavedRegex } from "@/types/regex"
-import { SAVED_REGEX_STORAGE_KEY } from "@/lib/constants"
+import { SavedRegex } from "@/types/regex";
+import { SAVED_REGEX_STORAGE_KEY } from "@/lib/constants";
 
 /**
  * Storage error types for different failure scenarios
@@ -9,15 +9,15 @@ export type StorageErrorType =
   | "quota_exceeded"
   | "corrupted_data"
   | "invalid_data"
-  | "unknown"
+  | "unknown";
 
 /**
  * Represents a storage operation error with context
  */
 export interface StorageError {
-  type: StorageErrorType
-  message: string
-  originalError?: Error
+  type: StorageErrorType;
+  message: string;
+  originalError?: Error;
 }
 
 /**
@@ -28,17 +28,17 @@ export interface StorageError {
  */
 export function loadSavedRegexes(): SavedRegex[] {
   if (typeof window === "undefined") {
-    return []
+    return [];
   }
 
   try {
-    const raw = localStorage.getItem(SAVED_REGEX_STORAGE_KEY)
-    if (!raw) return []
+    const raw = localStorage.getItem(SAVED_REGEX_STORAGE_KEY);
+    if (!raw) return [];
 
-    const parsed = JSON.parse(raw)
+    const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) {
-      console.warn("Stored regex data is not an array, clearing storage")
-      return []
+      console.warn("Stored regex data is not an array, clearing storage");
+      return [];
     }
 
     // Validate array items have required fields (name is optional for auto-save)
@@ -52,10 +52,10 @@ export function loadSavedRegexes(): SavedRegex[] {
         typeof item.flags === "object" &&
         typeof item.regex === "string" &&
         typeof item.createdAt === "number"
-    )
+    );
   } catch (error) {
-    console.error("Failed to load saved regexes:", error)
-    return []
+    console.error("Failed to load saved regexes:", error);
+    return [];
   }
 }
 
@@ -71,36 +71,29 @@ export function saveSavedRegexes(regexes: SavedRegex[]): StorageError | null {
     return {
       type: "not_available",
       message: "localStorage is not available in this environment",
-    }
+    };
   }
 
   try {
-    localStorage.setItem(SAVED_REGEX_STORAGE_KEY, JSON.stringify(regexes))
-    return null
+    localStorage.setItem(SAVED_REGEX_STORAGE_KEY, JSON.stringify(regexes));
+    return null;
   } catch (error) {
     if (error instanceof Error) {
-      if (
-        error.name === "QuotaExceededError" ||
-        error.message.includes("QuotaExceededError")
-      ) {
+      if (error.name === "QuotaExceededError" || error.message.includes("QuotaExceededError")) {
         return {
           type: "quota_exceeded",
-          message:
-            "Storage quota exceeded. Please delete some patterns to save new ones.",
+          message: "Storage quota exceeded. Please delete some patterns to save new ones.",
           originalError: error,
-        }
+        };
       }
 
-      if (
-        error.name === "SecurityError" ||
-        error.message.includes("access is denied")
-      ) {
+      if (error.name === "SecurityError" || error.message.includes("access is denied")) {
         return {
           type: "not_available",
           message:
             "Storage access denied. This may be due to private browsing mode or security settings.",
           originalError: error,
-        }
+        };
       }
     }
 
@@ -108,7 +101,7 @@ export function saveSavedRegexes(regexes: SavedRegex[]): StorageError | null {
       type: "unknown",
       message: "An error occurred while saving patterns",
       originalError: error instanceof Error ? error : undefined,
-    }
+    };
   }
 }
 
@@ -119,17 +112,17 @@ export function saveSavedRegexes(regexes: SavedRegex[]): StorageError | null {
  * @returns Error if save failed, null if successful
  */
 export function addSavedRegex(regex: SavedRegex): StorageError | null {
-  const existing = loadSavedRegexes()
+  const existing = loadSavedRegexes();
 
   // Update existing or add new
-  const updated = existing.findIndex((r) => r.id === regex.id)
+  const updated = existing.findIndex((r) => r.id === regex.id);
   if (updated >= 0) {
-    existing[updated] = regex
+    existing[updated] = regex;
   } else {
-    existing.push(regex)
+    existing.push(regex);
   }
 
-  return saveSavedRegexes(existing)
+  return saveSavedRegexes(existing);
 }
 
 /**
@@ -139,9 +132,9 @@ export function addSavedRegex(regex: SavedRegex): StorageError | null {
  * @returns Error if save failed, null if successful
  */
 export function removeSavedRegex(id: string): StorageError | null {
-  const existing = loadSavedRegexes()
-  const filtered = existing.filter((r) => r.id !== id)
-  return saveSavedRegexes(filtered)
+  const existing = loadSavedRegexes();
+  const filtered = existing.filter((r) => r.id !== id);
+  return saveSavedRegexes(filtered);
 }
 
 /**
@@ -154,18 +147,18 @@ export function clearAllSavedRegexes(): StorageError | null {
     return {
       type: "not_available",
       message: "localStorage is not available in this environment",
-    }
+    };
   }
 
   try {
-    localStorage.removeItem(SAVED_REGEX_STORAGE_KEY)
-    return null
+    localStorage.removeItem(SAVED_REGEX_STORAGE_KEY);
+    return null;
   } catch (error) {
     return {
       type: "unknown",
       message: "An error occurred while clearing patterns",
       originalError: error instanceof Error ? error : undefined,
-    }
+    };
   }
 }
 
@@ -175,12 +168,12 @@ export function clearAllSavedRegexes(): StorageError | null {
  * @returns Approximate size in bytes, 0 if error or not available
  */
 export function getStorageSize(): number {
-  if (typeof window === "undefined") return 0
+  if (typeof window === "undefined") return 0;
 
   try {
-    const raw = localStorage.getItem(SAVED_REGEX_STORAGE_KEY)
-    return raw ? new Blob([raw]).size : 0
+    const raw = localStorage.getItem(SAVED_REGEX_STORAGE_KEY);
+    return raw ? new Blob([raw]).size : 0;
   } catch {
-    return 0
+    return 0;
   }
 }

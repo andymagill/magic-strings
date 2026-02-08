@@ -64,7 +64,8 @@ body {
 }
 
 @keyframes wand-wave {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg);
   }
   25% {
@@ -92,4 +93,3 @@ body {
     transform: translate(var(--tx), var(--ty)) scale(0.3);
   }
 }
-

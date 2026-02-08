@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import React, { ReactNode, ErrorInfo } from 'react'
+import React, { ReactNode, ErrorInfo } from "react";
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 
 interface State {
-  hasError: boolean
-  error: Error | null
+  hasError: boolean;
+  error: Error | null;
 }
 
 /**
@@ -17,22 +17,25 @@ interface State {
  */
 export class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false, error: null }
+    super(props);
+    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo)
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4" role="alert">
+        <div
+          className="min-h-screen flex items-center justify-center bg-slate-950 px-4"
+          role="alert"
+        >
           <div className="text-center">
             <h1 className="text-4xl font-bold text-yellow-400 mb-4">Something went wrong</h1>
             <p className="text-slate-400 mb-8 max-w-md">
@@ -44,7 +47,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             >
               Refresh Page
             </button>
-            {process.env.NODE_ENV === 'development' && (
+            {process.env.NODE_ENV === "development" && (
               <details className="mt-8 text-left bg-slate-900 p-4 rounded text-sm text-slate-400 max-w-2xl mx-auto">
                 <summary className="cursor-pointer font-mono text-yellow-400 mb-2">
                   Error Details (Development Only)
@@ -56,9 +59,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
             )}
           </div>
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }

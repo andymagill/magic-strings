@@ -35,7 +35,7 @@ Try the live demo at: **https://magic-strings.vercel.app/**
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (recommended) or npm/yarn
 
 ### Installation
@@ -137,6 +137,7 @@ Regex flags modify how the pattern matching behaves:
 ### Spellbook
 
 The "Spellbook" is the collection of saved regex patterns stored in browser localStorage. Users can:
+
 - Save new patterns with descriptive names
 - Edit saved patterns
 - Delete patterns
@@ -169,6 +170,7 @@ Business logic is separated from UI components:
 ### Debugging
 
 #### TypeScript Errors
+
 All TypeScript errors must be fixed. The build will fail if there are type issues.
 
 ```bash
@@ -177,6 +179,7 @@ pnpm tsc --noEmit
 ```
 
 #### Component Testing
+
 Open the app and test the specific component. The Error Boundary will catch any runtime errors and display them in development mode.
 
 ---
@@ -186,37 +189,44 @@ Open the app and test the specific component. The Error Boundary will catch any 
 ### Core Utilities
 
 #### `buildRegex(criteria, flags): string`
+
 Transforms user criteria into a regex pattern string.
 
 ```typescript
-import { buildRegex } from '@/lib/regex-utils'
+import { buildRegex } from "@/lib/regex-utils";
 
-const regex = buildRegex([
-  { id: '1', type: 'starts_with', value: 'hello', quantifier: 'one' }
-], { global: true, caseInsensitive: false, multiline: false, dotAll: false })
+const regex = buildRegex([{ id: "1", type: "starts_with", value: "hello", quantifier: "one" }], {
+  global: true,
+  caseInsensitive: false,
+  multiline: false,
+  dotAll: false,
+});
 // Returns: "/^hello/g"
 ```
 
 #### `testRegexSafe(pattern, testString): Result`
+
 Tests a regex pattern against a string with timeout protection (prevents ReDoS attacks).
 
 ```typescript
-import { testRegexSafe } from '@/lib/regex-utils'
+import { testRegexSafe } from "@/lib/regex-utils";
 
-const result = testRegexSafe('/hello/gi', 'Hello World')
+const result = testRegexSafe("/hello/gi", "Hello World");
 // Returns: { matches: true, matchedParts: ['Hello'], error?: undefined }
 ```
 
 #### `loadSavedRegexes(): SavedRegex[]`
+
 Loads all saved regex patterns from localStorage.
 
 ```typescript
-import { loadSavedRegexes } from '@/lib/storage'
+import { loadSavedRegexes } from "@/lib/storage";
 
-const patterns = loadSavedRegexes()
+const patterns = loadSavedRegexes();
 ```
 
 #### `addSavedRegex(regex): StorageError | null`
+
 Saves or updates a regex pattern.
 
 ```typescript
@@ -236,45 +246,46 @@ if (error) {
 }
 ```
 
-
-
 ## Data Types
 
 ### SavedRegex
+
 A complete regex pattern saved to the Spellbook.
 
 ```typescript
 interface SavedRegex {
-  id: string                  // Unique identifier
-  name: string               // User-provided name
-  criteria: RegexCriterion[] // Array of pattern criteria
-  flags: RegexFlags          // Regex flags (g, i, m, s)
-  regex: string             // The generated regex string
-  createdAt: number         // Unix timestamp
+  id: string; // Unique identifier
+  name: string; // User-provided name
+  criteria: RegexCriterion[]; // Array of pattern criteria
+  flags: RegexFlags; // Regex flags (g, i, m, s)
+  regex: string; // The generated regex string
+  createdAt: number; // Unix timestamp
 }
 ```
 
 ### RegexCriterion
+
 A single criterion in a regex pattern.
 
 ```typescript
 interface RegexCriterion {
-  id: string        // Unique identifier
-  type: string      // Criterion type (e.g., "starts_with", "digit")
-  value: string     // The pattern value
-  quantifier: string // How many times to match
+  id: string; // Unique identifier
+  type: string; // Criterion type (e.g., "starts_with", "digit")
+  value: string; // The pattern value
+  quantifier: string; // How many times to match
 }
 ```
 
 ### RegexFlags
+
 Controls regex matching behavior.
 
 ```typescript
 interface RegexFlags {
-  global: boolean           // Match all occurrences
-  caseInsensitive: boolean // Ignore letter case
-  multiline: boolean       // Treat ^ and $ as line boundaries
-  dotAll: boolean         // . matches newlines
+  global: boolean; // Match all occurrences
+  caseInsensitive: boolean; // Ignore letter case
+  multiline: boolean; // Treat ^ and $ as line boundaries
+  dotAll: boolean; // . matches newlines
 }
 ```
 
@@ -283,11 +294,13 @@ interface RegexFlags {
 ## Error Handling
 
 ### Error Boundary
+
 The application uses an Error Boundary to catch React errors and display a graceful fallback UI instead of a blank screen.
 
 In development, error details are shown in a collapsible section. In production, a friendly message is displayed.
 
 ### localStorage Errors
+
 Storage operations can fail due to:
 
 - **Quota Exceeded**: Browser storage is full
@@ -297,6 +310,7 @@ Storage operations can fail due to:
 The `storage.ts` utilities handle these gracefully and return error information for logging or user notification.
 
 ### Regex Testing Errors
+
 Regex patterns can throw errors (invalid syntax) or cause performance issues (catastrophic backtracking). The `testRegexSafe()` function handles both with a 100ms timeout.
 
 ---
@@ -342,12 +356,14 @@ Potential improvements (not currently implemented):
 ### Development Issues
 
 **Port 3000 already in use:**
+
 ```bash
 # Use a different port
 pnpm dev -- -p 3001
 ```
 
 **Module not found errors:**
+
 ```bash
 # Clear node_modules and reinstall
 rm -rf node_modules pnpm-lock.yaml
@@ -355,6 +371,7 @@ pnpm install
 ```
 
 **TypeScript errors:**
+
 ```bash
 # Check what the errors are
 pnpm tsc --noEmit
@@ -363,11 +380,13 @@ pnpm tsc --noEmit
 ### Runtime Issues
 
 **Patterns not saving:**
+
 - Check browser console for storage errors
 - Verify localStorage is not disabled in browser settings
 - Ensure you haven't exceeded storage quota (usually 5-10MB)
 
 **Regex test not working:**
+
 - Verify the regex pattern is valid (check error messages)
 - Try with simpler patterns first
 - Check if the test string contains special characters

@@ -1,13 +1,9 @@
-"use client"
+"use client";
 
-import { useState, useCallback, useEffect, useRef } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import {
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select"
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,21 +14,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { SelectTrigger, Select } from "@/components/ui/select"
-import { WandIcon, SparklesIcon, HandIcon } from "@/components/icons"
-import { X, Plus, Copy, Check, Trash2 } from "lucide-react"
-import type { RegexCriterion, RegexFlags, SavedRegex } from "@/types/regex"
-import { buildRegex, testRegexSafe, generateId } from "@/lib/regex-utils"
-import { CRITERION_TYPES, QUANTIFIERS } from "@/lib/constants"
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SelectTrigger, Select } from "@/components/ui/select";
+import { WandIcon, SparklesIcon, HandIcon } from "@/components/icons";
+import { X, Plus, Copy, Check, Trash2 } from "lucide-react";
+import type { RegexCriterion, RegexFlags, SavedRegex } from "@/types/regex";
+import { buildRegex, testRegexSafe, generateId } from "@/lib/regex-utils";
+import { CRITERION_TYPES, QUANTIFIERS } from "@/lib/constants";
 
 interface RegexBuilderProps {
-  onSave: (saved: SavedRegex) => void
-  onDelete: (id: string) => void
-  editingRegex: SavedRegex | null
-  onCancelEdit: () => void
+  onSave: (saved: SavedRegex) => void;
+  onDelete: (id: string) => void;
+  editingRegex: SavedRegex | null;
+  onCancelEdit: () => void;
 }
 
 /**
@@ -40,51 +36,53 @@ interface RegexBuilderProps {
  * Auto-saves patterns as users build them, removing the need for manual save actions
  */
 export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: RegexBuilderProps) {
-  const [criteria, setCriteria] = useState<RegexCriterion[]>([])
+  const [criteria, setCriteria] = useState<RegexCriterion[]>([]);
   const [flags, setFlags] = useState<RegexFlags>({
     global: false,
     caseInsensitive: false,
     multiline: false,
     dotAll: false,
-  })
-  const [copied, setCopied] = useState(false)
-  const [testString, setTestString] = useState("")
-  const [testResult, setTestResult] = useState<null | { matches: boolean; matchedParts: string[] }>(null)
-  const [testError, setTestError] = useState<string | null>(null)
-  const [saveError, setSaveError] = useState<string | null>(null)
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const currentIdRef = useRef<string>(editingRegex?.id || generateId())
+  });
+  const [copied, setCopied] = useState(false);
+  const [testString, setTestString] = useState("");
+  const [testResult, setTestResult] = useState<null | { matches: boolean; matchedParts: string[] }>(
+    null
+  );
+  const [testError, setTestError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentIdRef = useRef<string>(editingRegex?.id || generateId());
 
-  const regex = buildRegex(criteria, flags)
+  const regex = buildRegex(criteria, flags);
 
   // Load editing regex when provided
   useEffect(() => {
     if (editingRegex) {
-      setCriteria(editingRegex.criteria)
-      setFlags(editingRegex.flags)
-      currentIdRef.current = editingRegex.id
+      setCriteria(editingRegex.criteria);
+      setFlags(editingRegex.flags);
+      currentIdRef.current = editingRegex.id;
     }
-  }, [editingRegex])
+  }, [editingRegex]);
 
   // Auto-save logic: triggers on criteria/flags changes with debouncing and validity check
   useEffect(() => {
     // Clear any pending save
     if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current)
+      clearTimeout(saveTimeoutRef.current);
     }
 
     // If criteria is empty, delete the saved regex if we're editing one
     if (criteria.length === 0) {
       if (editingRegex) {
-        onDelete(editingRegex.id)
-        onCancelEdit()
+        onDelete(editingRegex.id);
+        onCancelEdit();
       }
-      setSaveError(null)
-      return
+      setSaveError(null);
+      return;
     }
 
     // Check if regex is valid for saving
-    const isValidRegex = regex !== "//" && !testError
+    const isValidRegex = regex !== "//" && !testError;
 
     // Set up auto-save timeout (3 seconds inactivity)
     saveTimeoutRef.current = setTimeout(() => {
@@ -95,11 +93,11 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           flags,
           regex,
           createdAt: editingRegex?.createdAt || Date.now(),
-        }
-        onSave(saved)
-        setSaveError(null)
+        };
+        onSave(saved);
+        setSaveError(null);
       }
-    }, 3000)
+    }, 3000);
 
     // If regex becomes valid immediately, trigger save without waiting
     if (isValidRegex && criteria.length > 0 && regex !== "//") {
@@ -111,82 +109,79 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           flags,
           regex,
           createdAt: editingRegex?.createdAt || Date.now(),
-        }
-        onSave(saved)
-        setSaveError(null)
-      }, 500)
+        };
+        onSave(saved);
+        setSaveError(null);
+      }, 500);
 
       return () => {
-        clearTimeout(quickSaveTimeout)
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
-      }
+        clearTimeout(quickSaveTimeout);
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      };
     }
 
     return () => {
       if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current)
+        clearTimeout(saveTimeoutRef.current);
       }
-    }
-  }, [criteria, flags, regex, testError, onSave, onDelete, editingRegex, onCancelEdit])
+    };
+  }, [criteria, flags, regex, testError, onSave, onDelete, editingRegex, onCancelEdit]);
 
   const addCriterion = useCallback(() => {
     setCriteria((prev) => [
       ...prev,
       { id: generateId(), type: "contains", value: "", quantifier: "one" },
-    ])
-  }, [])
+    ]);
+  }, []);
 
   const removeCriterion = useCallback((id: string) => {
-    setCriteria((prev) => prev.filter((c) => c.id !== id))
-  }, [])
+    setCriteria((prev) => prev.filter((c) => c.id !== id));
+  }, []);
 
-  const updateCriterion = useCallback(
-    (id: string, field: keyof RegexCriterion, value: string) => {
-      setCriteria((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-      )
-    },
-    []
-  )
+  const updateCriterion = useCallback((id: string, field: keyof RegexCriterion, value: string) => {
+    setCriteria((prev) => prev.map((c) => (c.id === id ? { ...c, [field]: value } : c)));
+  }, []);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(regex)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }, [regex])
+    navigator.clipboard.writeText(regex);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [regex]);
 
   const handleReset = useCallback(() => {
     // If editing, delete the regex from storage
     if (editingRegex) {
-      onDelete(editingRegex.id)
+      onDelete(editingRegex.id);
     }
-    setCriteria([])
-    setFlags({ global: false, caseInsensitive: false, multiline: false, dotAll: false })
-    setTestString("")
-    setTestResult(null)
-    setTestError(null)
-    setSaveError(null)
-    currentIdRef.current = generateId()
-    if (editingRegex) onCancelEdit()
-  }, [editingRegex, onCancelEdit, onDelete])
+    setCriteria([]);
+    setFlags({ global: false, caseInsensitive: false, multiline: false, dotAll: false });
+    setTestString("");
+    setTestResult(null);
+    setTestError(null);
+    setSaveError(null);
+    currentIdRef.current = generateId();
+    if (editingRegex) onCancelEdit();
+  }, [editingRegex, onCancelEdit, onDelete]);
 
   const handleTest = useCallback(() => {
-    setTestError(null)
+    setTestError(null);
     if (!regex || regex === "//") {
-      setTestResult(null)
-      return
+      setTestResult(null);
+      return;
     }
-    const result = testRegexSafe(regex, testString)
+    const result = testRegexSafe(regex, testString);
     if (result.error) {
-      setTestError(result.error)
-      setTestResult(null)
+      setTestError(result.error);
+      setTestResult(null);
     } else {
-      setTestResult({ matches: result.matches, matchedParts: result.matchedParts })
+      setTestResult({ matches: result.matches, matchedParts: result.matchedParts });
     }
-  }, [regex, testString])
+  }, [regex, testString]);
 
   const needsValue = (type: string) =>
-    !["digit", "word_char", "whitespace", "any_char", "letter_upper", "letter_lower"].includes(type)
+    !["digit", "word_char", "whitespace", "any_char", "letter_upper", "letter_lower"].includes(
+      type
+    );
 
   return (
     <div className="space-y-6">
@@ -203,7 +198,11 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
         <div className="flex items-center gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-destructive"
+              >
                 <Trash2 className="w-4 h-4" />
                 <span className="sr-only">Delete</span>
               </Button>
@@ -219,7 +218,10 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Keep Spell</AlertDialogCancel>
-                <AlertDialogAction onClick={handleReset} className="bg-destructive text-destructive-foreground hover:bg-destructive/80">
+                <AlertDialogAction
+                  onClick={handleReset}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/80"
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -232,7 +234,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <HandIcon className="w-4 h-4 text-accent" />
+            <HandIcon className="w-4 h-4 text-accent" />
             Incantation Criteria
           </span>
           <Badge variant="outline" className="text-accent border-accent/30 text-xs">
@@ -261,11 +263,11 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
 
               <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
                 {/* Type */}
-                <Select
-                  value={c.type}
-                  onValueChange={(val) => updateCriterion(c.id, "type", val)}
-                >
-                  <SelectTrigger className="bg-card border-border text-foreground" aria-label="Criterion type">
+                <Select value={c.type} onValueChange={(val) => updateCriterion(c.id, "type", val)}>
+                  <SelectTrigger
+                    className="bg-card border-border text-foreground"
+                    aria-label="Criterion type"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
@@ -306,7 +308,10 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                     value={c.quantifier}
                     onValueChange={(val) => updateCriterion(c.id, "quantifier", val)}
                   >
-                    <SelectTrigger className="bg-card border-border text-foreground" aria-label="Quantifier">
+                    <SelectTrigger
+                      className="bg-card border-border text-foreground"
+                      aria-label="Quantifier"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border">
@@ -402,14 +407,22 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                 onClick={handleCopy}
                 className="shrink-0 text-muted-foreground hover:text-accent"
               >
-                {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
                 <span className="sr-only">Copy regex</span>
               </Button>
             )}
           </div>
         </div>
         {saveError && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
+          <div
+            className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
+            role="alert"
+            aria-live="assertive"
+          >
             <p className="font-medium">Error saving pattern</p>
             <p className="text-xs mt-1">{saveError}</p>
           </div>
@@ -423,9 +436,9 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           <Input
             value={testString}
             onChange={(e) => {
-              setTestString(e.target.value)
-              setTestResult(null)
-              setTestError(null)
+              setTestString(e.target.value);
+              setTestResult(null);
+              setTestError(null);
             }}
             placeholder="Enter test string..."
             className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground/40"
@@ -441,7 +454,11 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           </Button>
         </div>
         {testError && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive" role="alert" aria-live="polite">
+          <div
+            className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
+            role="alert"
+            aria-live="polite"
+          >
             <p className="font-medium">Error testing pattern:</p>
             <p className="text-xs mt-1">{testError}</p>
           </div>
@@ -478,7 +495,6 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           </div>
         )}
       </div>
-
     </div>
-  )
+  );
 }

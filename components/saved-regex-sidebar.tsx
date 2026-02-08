@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,18 +13,18 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { SparklesIcon, TopHatIcon } from "@/components/icons"
-import { Pencil, Trash2 } from "lucide-react"
-import type { SavedRegex } from "@/types/regex"
+} from "@/components/ui/alert-dialog";
+import { SparklesIcon, TopHatIcon } from "@/components/icons";
+import { Pencil, Trash2 } from "lucide-react";
+import type { SavedRegex } from "@/types/regex";
 
 interface SavedRegexSidebarProps {
-  savedRegexes: SavedRegex[]
-  onEdit: (regex: SavedRegex) => void
-  onDelete: (id: string) => void
-  onNew: () => void
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  savedRegexes: SavedRegex[];
+  onEdit: (regex: SavedRegex) => void;
+  onDelete: (id: string) => void;
+  onNew: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function SavedRegexSidebar({
@@ -35,17 +35,20 @@ export function SavedRegexSidebar({
   open,
   onOpenChange,
 }: SavedRegexSidebarProps) {
-  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const confirmDelete = (id: string) => {
-    onDelete(id)
-    setDeleteId(null)
-  }
+    onDelete(id);
+    setDeleteId(null);
+  };
 
   return (
     <>
       {/* Desktop Sidebar - Sticky */}
-      <aside className="hidden lg:block sticky top-0 h-screen w-80 xl:w-96 border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto" aria-label="Saved regex patterns spellbook">
+      <aside
+        className="hidden lg:block sticky top-0 h-screen w-80 xl:w-96 border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto"
+        aria-label="Saved regex patterns spellbook"
+      >
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <TopHatIcon className="w-6 h-6 text-accent" />
@@ -80,15 +83,15 @@ export function SavedRegexSidebar({
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <code 
+                      <code
                         className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all cursor-pointer hover:bg-secondary/70 transition-colors"
                         onClick={() => onEdit(saved)}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            onEdit(saved)
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onEdit(saved);
                           }
                         }}
                         aria-label={`Edit regex pattern: ${saved.regex}`}
@@ -151,8 +154,8 @@ export function SavedRegexSidebar({
             <div className="mt-6 space-y-3">
               <Button
                 onClick={() => {
-                  onNew()
-                  onOpenChange(false)
+                  onNew();
+                  onOpenChange(false);
                 }}
                 variant="accent"
                 className="w-full"
@@ -162,58 +165,58 @@ export function SavedRegexSidebar({
             </div>
 
             <div className="mt-6 space-y-3">
-            {savedRegexes.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border/30 p-8 text-center">
-                <SparklesIcon className="w-8 h-8 text-muted-foreground/20 mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground/50">
-                  No saved spells yet. Create your first enchantment to begin.
-                </p>
-              </div>
-            ) : (
-              savedRegexes.map((saved) => (
-                <div
-                  key={saved.id}
-                  className="rounded-xl border border-border/30 bg-card/60 p-4 transition-all hover:border-accent/20"
-                >
-                  <div className="space-y-3">
-                    <code 
-                      className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all cursor-pointer hover:bg-secondary/70 transition-colors"
-                      onClick={() => onEdit(saved)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          onEdit(saved)
-                        }
-                      }}
-                      aria-label={`Edit regex pattern: ${saved.regex}`}
-                    >
-                      {saved.regex}
-                    </code>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
+              {savedRegexes.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border/30 p-8 text-center">
+                  <SparklesIcon className="w-8 h-8 text-muted-foreground/20 mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground/50">
+                    No saved spells yet. Create your first enchantment to begin.
+                  </p>
+                </div>
+              ) : (
+                savedRegexes.map((saved) => (
+                  <div
+                    key={saved.id}
+                    className="rounded-xl border border-border/30 bg-card/60 p-4 transition-all hover:border-accent/20"
+                  >
+                    <div className="space-y-3">
+                      <code
+                        className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all cursor-pointer hover:bg-secondary/70 transition-colors"
                         onClick={() => onEdit(saved)}
-                        className="flex-1 text-muted-foreground hover:text-accent"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onEdit(saved);
+                          }
+                        }}
+                        aria-label={`Edit regex pattern: ${saved.regex}`}
                       >
-                        <Pencil className="w-3.5 h-3.5 mr-1" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDeleteId(saved.id)}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                        {saved.regex}
+                      </code>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onEdit(saved)}
+                          className="flex-1 text-muted-foreground hover:text-accent"
+                        >
+                          <Pencil className="w-3.5 h-3.5 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setDeleteId(saved.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
             </div>
           </div>
         </SheetContent>
@@ -225,7 +228,8 @@ export function SavedRegexSidebar({
           <AlertDialogHeader>
             <AlertDialogTitle className="font-serif">Break this spell?</AlertDialogTitle>
             <AlertDialogDescription>
-              This enchantment will be permanently removed from your Spellbook. This action cannot be undone.
+              This enchantment will be permanently removed from your Spellbook. This action cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -240,5 +244,5 @@ export function SavedRegexSidebar({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

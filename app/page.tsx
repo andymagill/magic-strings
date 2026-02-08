@@ -1,78 +1,75 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { RegexBuilder } from "@/components/regex-builder"
-import { SavedRegexSidebar } from "@/components/saved-regex-sidebar"
-import { WandIcon, SparklesIcon } from "@/components/icons"
-import { Button } from "@/components/ui/button"
-import { BookOpen } from "lucide-react"
-import type { SavedRegex } from "@/types/regex"
-import { loadSavedRegexes, addSavedRegex, removeSavedRegex } from "@/lib/storage"
+import { useState, useEffect, useCallback } from "react";
+import { RegexBuilder } from "@/components/regex-builder";
+import { SavedRegexSidebar } from "@/components/saved-regex-sidebar";
+import { WandIcon, SparklesIcon } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { BookOpen } from "lucide-react";
+import type { SavedRegex } from "@/types/regex";
+import { loadSavedRegexes, addSavedRegex, removeSavedRegex } from "@/lib/storage";
 
 /**
  * Home page component
  * Main entry point for the Magic Strings regex builder application
  */
 export default function Page() {
-  const [savedRegexes, setSavedRegexes] = useState<SavedRegex[]>([])
-  const [editingRegex, setEditingRegex] = useState<SavedRegex | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [savedRegexes, setSavedRegexes] = useState<SavedRegex[]>([]);
+  const [editingRegex, setEditingRegex] = useState<SavedRegex | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Load saved patterns on mount (sorted by most recent first)
   useEffect(() => {
-    const loaded = loadSavedRegexes()
-    setSavedRegexes(loaded.sort((a, b) => b.createdAt - a.createdAt))
-    setMounted(true)
-  }, [])
+    const loaded = loadSavedRegexes();
+    setSavedRegexes(loaded.sort((a, b) => b.createdAt - a.createdAt));
+    setMounted(true);
+  }, []);
 
-  const handleSave = useCallback(
-    (saved: SavedRegex) => {
-      setSavedRegexes((prev) => {
-        const existing = prev.findIndex((r) => r.id === saved.id)
-        let next: SavedRegex[]
-        if (existing >= 0) {
-          // Update existing and move to front (most recent)
-          next = [saved, ...prev.filter((r) => r.id !== saved.id)]
-        } else {
-          next = [saved, ...prev]
-        }
-        addSavedRegex(saved)
-        return next
-      })
-      setEditingRegex(null)
-    },
-    []
-  )
+  const handleSave = useCallback((saved: SavedRegex) => {
+    setSavedRegexes((prev) => {
+      const existing = prev.findIndex((r) => r.id === saved.id);
+      let next: SavedRegex[];
+      if (existing >= 0) {
+        // Update existing and move to front (most recent)
+        next = [saved, ...prev.filter((r) => r.id !== saved.id)];
+      } else {
+        next = [saved, ...prev];
+      }
+      addSavedRegex(saved);
+      return next;
+    });
+    setEditingRegex(null);
+  }, []);
 
   const handleDelete = useCallback((id: string) => {
     setSavedRegexes((prev) => {
-      const next = prev.filter((r) => r.id !== id)
-      removeSavedRegex(id)
-      return next
-    })
-  }, [])
+      const next = prev.filter((r) => r.id !== id);
+      removeSavedRegex(id);
+      return next;
+    });
+  }, []);
 
   const handleEdit = useCallback((regex: SavedRegex) => {
-    setEditingRegex(regex)
-    setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }, [])
+    setEditingRegex(regex);
+    setSidebarOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const handleCancelEdit = useCallback(() => {
-    setEditingRegex(null)
-  }, [])
+    setEditingRegex(null);
+  }, []);
 
   const handleNew = useCallback(() => {
-    handleCancelEdit()
-  }, [handleCancelEdit])
+    handleCancelEdit();
+  }, [handleCancelEdit]);
 
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <WandIcon className="w-8 h-8 text-accent animate-wand-wave" />
       </div>
-    )
+    );
   }
 
   return (
@@ -144,7 +141,9 @@ export default function Page() {
           <footer className="text-center pt-6 space-y-3">
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <SparklesIcon className="w-4 h-4" />
-              <span className="text-xs font-serif italic">Every great regex starts with a little magic</span>
+              <span className="text-xs font-serif italic">
+                Every great regex starts with a little magic
+              </span>
               <SparklesIcon className="w-4 h-4" />
             </div>
             <div className="text-xs text-muted-foreground/70">
@@ -172,5 +171,5 @@ export default function Page() {
         onOpenChange={setSidebarOpen}
       />
     </div>
-  )
+  );
 }

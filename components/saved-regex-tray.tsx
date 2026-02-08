@@ -1,32 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { WandIcon, SparklesIcon, TopHatIcon } from "@/components/icons"
-import { ChevronDown, Pencil, Trash2, Copy, Check } from "lucide-react"
-import type { SavedRegex } from "@/types/regex"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { WandIcon, SparklesIcon, TopHatIcon } from "@/components/icons";
+import { ChevronDown, Pencil, Trash2, Copy, Check } from "lucide-react";
+import type { SavedRegex } from "@/types/regex";
 
 interface SavedRegexTrayProps {
-  savedRegexes: SavedRegex[]
-  onEdit: (regex: SavedRegex) => void
-  onDelete: (id: string) => void
+  savedRegexes: SavedRegex[];
+  onEdit: (regex: SavedRegex) => void;
+  onDelete: (id: string) => void;
 }
 
 export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTrayProps) {
-  const [isOpen, setIsOpen] = useState(true)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [isOpen, setIsOpen] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopy = (regex: string, id: string) => {
-    navigator.clipboard.writeText(regex)
-    setCopiedId(id)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
+    navigator.clipboard.writeText(regex);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -38,9 +34,7 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
         >
           <div className="flex items-center gap-3">
             <TopHatIcon className="w-5 h-5 text-accent" />
-            <span className="font-serif font-semibold text-foreground">
-              Spell Book
-            </span>
+            <span className="font-serif font-semibold text-foreground">Spell Book</span>
             <Badge variant="outline" className="text-accent border-accent/30 text-xs">
               {savedRegexes.length}
             </Badge>
@@ -73,7 +67,10 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
                     <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
                     <h3 className="font-medium text-foreground truncate">{saved.name}</h3>
                   </div>
-                  <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all" aria-label={`Regex pattern: ${saved.regex}`}>
+                  <code
+                    className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all"
+                    aria-label={`Regex pattern: ${saved.regex}`}
+                  >
                     {saved.regex}
                   </code>
                   <p className="text-xs text-muted-foreground/40 mt-2">
@@ -126,5 +123,5 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
         )}
       </CollapsibleContent>
     </Collapsible>
-  )
+  );
 }

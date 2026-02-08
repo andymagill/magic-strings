@@ -4,13 +4,13 @@
  */
 export interface RegexCriterion {
   /** Unique identifier for this criterion */
-  id: string
+  id: string;
   /** The type of pattern this criterion represents (e.g., "contains", "digit", "custom_class") */
-  type: string
+  type: string;
   /** The value to match (pattern, character class, etc.) - not needed for some types like "digit" */
-  value: string
+  value: string;
   /** How many times the pattern should match (e.g., "one", "zero_or_more", "one_or_more") */
-  quantifier: string
+  quantifier: string;
 }
 
 /**
@@ -19,13 +19,13 @@ export interface RegexCriterion {
  */
 export interface RegexFlags {
   /** /g flag - Match all occurrences instead of just the first */
-  global: boolean
+  global: boolean;
   /** /i flag - Make matching case-insensitive */
-  caseInsensitive: boolean
+  caseInsensitive: boolean;
   /** /m flag - Treat ^ and $ as line boundaries, not just string boundaries */
-  multiline: boolean
+  multiline: boolean;
   /** /s flag - Make . match newline characters (dot all) */
-  dotAll: boolean
+  dotAll: boolean;
 }
 
 /**
@@ -34,15 +34,15 @@ export interface RegexFlags {
  */
 export interface SavedRegex {
   /** Unique identifier for this pattern */
-  id: string
+  id: string;
   /** @deprecated Optional user-friendly name (no longer used in auto-save mode) */
-  name?: string
+  name?: string;
   /** Array of criteria that compose this pattern */
-  criteria: RegexCriterion[]
+  criteria: RegexCriterion[];
   /** Flags that modify pattern matching behavior */
-  flags: RegexFlags
+  flags: RegexFlags;
   /** The compiled regex string in format /pattern/flags */
-  regex: string
+  regex: string;
   /** Timestamp when the pattern was created (milliseconds since epoch) */
-  createdAt: number
+  createdAt: number;
 }

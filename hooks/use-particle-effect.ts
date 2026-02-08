@@ -6,11 +6,11 @@ export function useParticleEffect() {
   const triggerParticles = (x: number, y: number) => {
     // Dispatch a custom event for ParticleEffects to listen to
     window.dispatchEvent(
-      new CustomEvent('triggerParticles', {
+      new CustomEvent("triggerParticles", {
         detail: { x, y },
-      }),
-    )
-  }
+      })
+    );
+  };
 
-  return triggerParticles
+  return triggerParticles;
 }

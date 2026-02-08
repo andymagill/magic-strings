@@ -56,26 +56,31 @@ Magic Strings follows a **layered architecture** with clear separation of concer
 **Pattern**: Components are **presentational** - they receive data as props and call callbacks for actions. Visual effects are implemented through CSS styling and animations.
 
 ### 2. Logic Layer (Hooks & Utils)
+
 #### Utilities (`lib/`)
 
 **`regex-utils.ts`**
+
 - Pure functions for regex pattern building
 - Regex testing with timeout protection (ReDoS prevention)
 - No side effects or state
 
 Functions:
+
 - `escapeRegex(str)`: Escapes special regex characters
 - `buildRegex(criteria, flags)`: Builds regex from user input
 - `testRegexSafe(pattern, string)`: Safely tests regex with timeout
 - `generateId()`: Creates unique IDs
 
 **`storage.ts`**
+
 - Abstraction over browser localStorage
 - Error handling for quota/permission issues
 - Validation of stored data
 - No throw statements - returns error objects
 
 Functions:
+
 - `loadSavedRegexes()`: Load all saved patterns
 - `saveSavedRegexes(array)`: Persist patterns to storage
 - `addSavedRegex(regex)`: Add or update single pattern
@@ -83,18 +88,21 @@ Functions:
 - `clearAllSavedRegexes()`: Clear all patterns
 
 **Benefits**:
+
 - Centralizes business logic away from components
 - Makes logic testable (no React dependencies)
 - Easy to swap storage backend (e.g., API call)
 - Consistent error handling
 
 **`constants.ts`**
+
 - Configuration constants
 - Criterion types and quantifiers
 - Storage keys
 - Timeout values
 
 **`utils.ts`**
+
 - General utilities (from shadcn/ui)
 - Currently just className merging
 
@@ -122,19 +130,26 @@ Functions:
 **Error Handling**:
 
 The storage layer is defensive against:
+
 - **Quota Exceeded**: Storage full (returns error to caller)
 - **Access Denied**: Private browsing or permissions (returns error)
 - **Corrupted Data**: Invalid JSON or missing fields (filters bad items)
 - **Not Available**: SSR environments (returns empty array)
 
 Error types defined in `storage.ts`:
+
 ```typescript
-type StorageErrorType = "not_available" | "quota_exceeded" | "corrupted_data" | "invalid_data" | "unknown"
+type StorageErrorType =
+  | "not_available"
+  | "quota_exceeded"
+  | "corrupted_data"
+  | "invalid_data"
+  | "unknown";
 
 interface StorageError {
-  type: StorageErrorType
-  message: string
-  originalError?: Error
+  type: StorageErrorType;
+  message: string;
+  originalError?: Error;
 }
 ```
 
@@ -214,12 +229,14 @@ User enters test string
 **Decision**: Move regex building, testing, and storage operations to `lib/` directory
 
 **Rationale**:
+
 - Pure functions are easier to test
 - UI components stay focused on rendering
 - Logic can be reused (e.g., in CLI or API later)
 - No React dependencies in utilities
 
-**Result**: 
+**Result**:
+
 - `RegexBuilder.tsx` now imports from `lib/regex-utils.ts`
 - `page.tsx` imports from `lib/storage.ts`
 - Simple to understand each module's responsibility
@@ -229,12 +246,14 @@ User enters test string
 **Decision**: Implement magical animations using CSS styling and Tailwind utilities instead of JavaScript state management
 
 **Rationale**:
+
 - Better performance (GPU acceleration, no JavaScript overhead)
 - Simpler component code (no state management needed)
 - Easier to maintain and update
 - Reduced bundle size
 
 **Result**:
+
 - Components use Tailwind CSS classes for styling
 - Animations triggered by CSS pseudo-classes (`:hover`, `:focus`, `:active`)
 - No animation state in React - completely CSS-driven
@@ -245,14 +264,16 @@ User enters test string
 **Decision**: All storage operations return errors instead of throwing
 
 **Rationale**:
+
 - Graceful degradation (app doesn't crash on storage errors)
 - Caller has full control over error handling
 - Can provide user feedback without try-catch
 - Follows Result pattern (like Rust, Go)
 
 **Result**:
+
 ```typescript
-const error = addSavedRegex(regex)
+const error = addSavedRegex(regex);
 if (error) {
   // Handle error (show toast, log, etc.)
 }
@@ -263,17 +284,19 @@ if (error) {
 **Decision**: Wrap regex testing in 100ms timeout
 
 **Rationale**:
+
 - Protects against ReDoS (Regular Expression Denial of Service)
 - Patterns like `(a+)+b` can hang browser indefinitely
 - 100ms is user-perceptible but prevents freeze
 - Alternative would be to use WASM regex engine (future)
 
 **Result**:
+
 ```typescript
-const result = testRegexSafe(pattern, testString)
+const result = testRegexSafe(pattern, testString);
 if (result.error) {
   // Likely catastrophic backtracking
-  displayError("Pattern took too long to evaluate")
+  displayError("Pattern took too long to evaluate");
 }
 ```
 
@@ -282,12 +305,14 @@ if (result.error) {
 **Decision**: Wrap app in Error Boundary at `layout.tsx`
 
 **Rationale**:
+
 - Catches unexpected React errors
 - Prevents blank white screen
 - Shows user-friendly message
 - Helpful debug info in development
 
 **Result**:
+
 - Any component error is caught and displayed gracefully
 - Development error details help debugging
 - Production shows friendly message
@@ -309,6 +334,7 @@ RegexBuilder.tsx (orchestrator)
 ```
 
 Benefits:
+
 - Easier to understand each component's responsibility
 - Simpler to test individual sections
 - Reduced prop drilling with context
@@ -323,11 +349,13 @@ This is intentionally not done now to keep scope manageable.
 ### Adding New Criterion Types
 
 1. Add to `CRITERION_TYPES` in `lib/constants.ts`:
+
    ```typescript
    { value: "hex_color", label: "Hex Color (#XXXXXX)" }
    ```
 
 2. Add case in `buildRegex()` in `lib/regex-utils.ts`:
+
    ```typescript
    case "hex_color":
      part = "#[0-9a-fA-F]{6}"
@@ -343,10 +371,11 @@ Similar process - add to `QUANTIFIERS` constant and handle in `buildRegex()`
 ### Changing Storage Backend
 
 Replace functions in `lib/storage.ts` with API calls:
+
 ```typescript
 export async function loadSavedRegexes() {
-  const res = await fetch('/api/spellbook')
-  return res.json()
+  const res = await fetch("/api/spellbook");
+  return res.json();
 }
 ```
 
@@ -355,6 +384,7 @@ All other code remains unchanged!
 ---
 
 ## Testing Strategy (Future)
+
 Recommended testing approach:
 
 ```
@@ -392,6 +422,7 @@ E2E Tests
 ## Performance Profile
 
 ### Bundle Size
+
 - React: ~42KB
 - Next.js: ~50KB
 - shadcn/ui: ~30KB
@@ -399,6 +430,7 @@ E2E Tests
 - **Total**: ~170KB gzipped
 
 ### Runtime Performance
+
 - Initial load: ~1-2 seconds
 - Pattern building: ~10ms
 - Pattern testing: ~1-100ms (with timeout)
@@ -406,6 +438,7 @@ E2E Tests
 - Component re-render: <16ms
 
 ### Memory Usage
+
 - No memory leaks (hooks clean up timeouts)
 - Animation state only exists while animating
 - savedRegexes array grows with user patterns (~1KB per pattern)
@@ -415,21 +448,25 @@ E2E Tests
 ## Security Considerations
 
 ### 1. **XSS Prevention**
+
 - React auto-escapes JSX content
 - No `dangerouslySetInnerHTML` used
 - User input is treated as text, not HTML
 
 ### 2. **ReDoS Protection**
+
 - Regex testing wrapped in timeout
 - Prevents catastrophic backtracking attacks
 - User patterns can't freeze browser
 
 ### 3. **Storage Security**
+
 - localStorage only accessible from same origin
 - No sensitive data stored (just regex patterns)
 - No encryption needed (user data, not credentials)
 
 ### 4. **CSRF**
+
 - No backend, so no CSRF risk
 - All operations are client-side only
 
@@ -440,11 +477,13 @@ E2E Tests
 ### Regular Tasks
 
 1. **Update Dependencies**
+
    ```bash
    pnpm update
    ```
 
 2. **Check TypeScript**
+
    ```bash
    pnpm tsc --noEmit
    ```

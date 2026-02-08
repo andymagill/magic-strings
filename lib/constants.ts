@@ -18,7 +18,7 @@ export const CRITERION_TYPES = [
   { value: "or", label: "Or (|)" },
   { value: "not", label: "Not [^...]" },
   { value: "literal", label: "Literal text" },
-] as const
+] as const;
 
 /**
  * Regex quantifiers
@@ -31,15 +31,15 @@ export const QUANTIFIERS = [
   { value: "optional", label: "Optional (?)" },
   { value: "lazy", label: "Lazy (*?)" },
   { value: "custom", label: "Custom {n,m}" },
-] as const
+] as const;
 
 /**
  * LocalStorage key for saved regex patterns
  */
-export const SAVED_REGEX_STORAGE_KEY = "magic_strings_spellbook"
+export const SAVED_REGEX_STORAGE_KEY = "magic_strings_spellbook";
 
 /**
  * Regex timeout in milliseconds
  * Prevents catastrophic backtracking from freezing the browser
  */
-export const REGEX_TIMEOUT_MS = 100
+export const REGEX_TIMEOUT_MS = 100;
