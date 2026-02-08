@@ -454,7 +454,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
               <div>
                 <p className="font-medium flex items-center gap-2">
                   <SparklesIcon className="w-4 h-4" />
-                  Abracradabra, match found!
+                  Bravo, match found!
                 </p>
                 {testResult.matchedParts.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
