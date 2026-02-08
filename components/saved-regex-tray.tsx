@@ -34,6 +34,7 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
         <button
           type="button"
           className="flex w-full items-center justify-between rounded-xl border border-border/50 bg-card/80 px-4 py-3 text-left transition-colors hover:bg-secondary/50 hover:border-accent/20 group"
+          aria-describedby="spellbook-help"
         >
           <div className="flex items-center gap-3">
             <TopHatIcon className="w-5 h-5 text-accent" />
@@ -72,7 +73,7 @@ export function SavedRegexTray({ savedRegexes, onEdit, onDelete }: SavedRegexTra
                     <SparklesIcon className="w-4 h-4 text-accent shrink-0" />
                     <h3 className="font-medium text-foreground truncate">{saved.name}</h3>
                   </div>
-                  <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all">
+                  <code className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all" aria-label={`Regex pattern: ${saved.regex}`}>
                     {saved.regex}
                   </code>
                   <p className="text-xs text-muted-foreground/40 mt-2">

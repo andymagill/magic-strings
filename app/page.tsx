@@ -77,6 +77,14 @@ export default function Page() {
 
   return (
     <div className="flex min-h-screen">
+      {/* Skip Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-accent-foreground focus:rounded-lg focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+
       {/* Main Content */}
       <main className="relative flex-1 min-h-screen">
         {/* Header */}
@@ -117,6 +125,7 @@ export default function Page() {
         <div className="relative z-10 px-4 sm:px-0 pb-12 max-w-2xl mx-auto space-y-6">
           {/* Builder Card - Main Stage */}
           <section
+            id="main-content"
             className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 shadow-2xl shadow-black/20"
             aria-label="Regex builder - Magic Stage"
           >

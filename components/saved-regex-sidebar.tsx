@@ -45,7 +45,7 @@ export function SavedRegexSidebar({
   return (
     <>
       {/* Desktop Sidebar - Sticky */}
-      <aside className="hidden lg:block sticky top-0 h-screen w-80 xl:w-96 border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto">
+      <aside className="hidden lg:block sticky top-0 h-screen w-80 xl:w-96 border-l border-border/30 bg-card/40 backdrop-blur-sm overflow-y-auto" aria-label="Saved regex patterns spellbook">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <TopHatIcon className="w-6 h-6 text-accent" />
@@ -59,6 +59,7 @@ export function SavedRegexSidebar({
             onClick={onNew}
             variant="accent"
             className="w-full mb-4"
+            aria-label="Create new regex pattern"
           >
             + New
           </Button>
@@ -82,6 +83,15 @@ export function SavedRegexSidebar({
                       <code 
                         className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all cursor-pointer hover:bg-secondary/70 transition-colors"
                         onClick={() => onEdit(saved)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            onEdit(saved)
+                          }
+                        }}
+                        aria-label={`Edit regex pattern: ${saved.regex}`}
                       >
                         {saved.regex}
                       </code>
@@ -168,6 +178,15 @@ export function SavedRegexSidebar({
                     <code 
                       className="block text-sm font-mono text-accent/80 bg-secondary/50 rounded-lg px-3 py-2 break-all cursor-pointer hover:bg-secondary/70 transition-colors"
                       onClick={() => onEdit(saved)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          onEdit(saved)
+                        }
+                      }}
+                      aria-label={`Edit regex pattern: ${saved.regex}`}
                     >
                       {saved.regex}
                     </code>

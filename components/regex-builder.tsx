@@ -265,7 +265,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                   value={c.type}
                   onValueChange={(val) => updateCriterion(c.id, "type", val)}
                 >
-                  <SelectTrigger className="bg-card border-border text-foreground">
+                  <SelectTrigger className="bg-card border-border text-foreground" aria-label="Criterion type">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
@@ -290,6 +290,9 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                           : "value..."
                     }
                     className="bg-card border-border text-foreground placeholder:text-muted-foreground/40"
+                    aria-label="Criterion value"
+                    aria-required={needsValue(c.type)}
+                    aria-invalid={needsValue(c.type) && !c.value}
                   />
                 ) : (
                   <div className="flex items-center px-3 rounded-md bg-card border border-border text-muted-foreground text-sm">
@@ -303,7 +306,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                     value={c.quantifier}
                     onValueChange={(val) => updateCriterion(c.id, "quantifier", val)}
                   >
-                    <SelectTrigger className="bg-card border-border text-foreground">
+                    <SelectTrigger className="bg-card border-border text-foreground" aria-label="Quantifier">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border">
@@ -334,10 +337,14 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           onClick={addCriterion}
           variant="accent"
           className="w-full"
+          aria-describedby="add-criterion-help"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Criterion
         </Button>
+        <span id="add-criterion-help" className="sr-only">
+          Add a new criterion rule to your regex pattern
+        </span>
       </div>
 
       {/* Flags */}
@@ -353,9 +360,9 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
             { key: "multiline" as const, label: "Multiline", desc: "^ $ per line" },
             { key: "dotAll" as const, label: "Dot All", desc: ". matches \\n" },
           ].map((flag) => (
-            <div
+            <label
               key={flag.key}
-              className="flex items-center justify-between rounded-lg border border-border/50 bg-secondary/30 px-3 py-2"
+              className="flex items-center justify-between rounded-lg border border-border/50 bg-secondary/30 px-3 py-2 cursor-pointer"
             >
               <div>
                 <p className="text-sm font-medium text-foreground">{flag.label}</p>
@@ -367,7 +374,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                   setFlags((prev) => ({ ...prev, [flag.key]: checked }))
                 }
               />
-            </div>
+            </label>
           ))}
         </div>
       </div>
@@ -402,7 +409,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           </div>
         </div>
         {saveError && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
             <p className="font-medium">Error saving pattern</p>
             <p className="text-xs mt-1">{saveError}</p>
           </div>
@@ -422,6 +429,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
             }}
             placeholder="Enter test string..."
             className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground/40"
+            aria-label="Test string input"
           />
           <Button
             onClick={handleTest}
@@ -433,7 +441,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           </Button>
         </div>
         {testError && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive" role="alert" aria-live="polite">
             <p className="font-medium">Error testing pattern:</p>
             <p className="text-xs mt-1">{testError}</p>
           </div>
@@ -445,6 +453,8 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
                 ? "border-green-500/30 bg-green-500/5 text-green-400"
                 : "border-destructive/30 bg-destructive/5 text-destructive"
             }`}
+            role="status"
+            aria-live="polite"
           >
             {testResult.matches ? (
               <div>
