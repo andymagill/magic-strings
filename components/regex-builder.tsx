@@ -197,15 +197,10 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
             <WandIcon className="w-6 h-6 text-accent animate-wand-wave" />
           </div>
           <h2 className="text-xl font-serif font-bold text-foreground">
-            {editingRegex ? "Edit Regex" : "Craft Your Spell"}
+            Craft Your Spell
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          {editingRegex && (
-            <Button variant="ghost" size="sm" onClick={onCancelEdit} className="text-muted-foreground">
-              Cancel
-            </Button>
-          )}
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
