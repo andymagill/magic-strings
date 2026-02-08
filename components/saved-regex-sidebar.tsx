@@ -136,7 +136,7 @@ export function SavedRegexSidebar({
 
       {/* Mobile Sheet */}
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="right" className="w-full sm:max-w-md">
+        <SheetContent side="right" className="w-full sm:max-w-md flex flex-col">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-3">
               <TopHatIcon className="w-6 h-6 text-accent" />
@@ -147,20 +147,21 @@ export function SavedRegexSidebar({
             </SheetTitle>
           </SheetHeader>
 
-          <div className="mt-6 space-y-3">
-            <Button
-              onClick={() => {
-                onNew()
-                onOpenChange(false)
-              }}
-              variant="accent"
-              className="w-full"
-            >
-              + New
-            </Button>
-          </div>
+          <div className="flex-1 overflow-y-auto pr-4">
+            <div className="mt-6 space-y-3">
+              <Button
+                onClick={() => {
+                  onNew()
+                  onOpenChange(false)
+                }}
+                variant="accent"
+                className="w-full"
+              >
+                + New
+              </Button>
+            </div>
 
-          <div className="mt-6 space-y-3">
+            <div className="mt-6 space-y-3">
             {savedRegexes.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border/30 p-8 text-center">
                 <SparklesIcon className="w-8 h-8 text-muted-foreground/20 mx-auto mb-2" />
@@ -213,6 +214,7 @@ export function SavedRegexSidebar({
                 </div>
               ))
             )}
+            </div>
           </div>
         </SheetContent>
       </Sheet>
