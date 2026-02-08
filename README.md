@@ -2,6 +2,10 @@
 
 A delightful visual regex pattern builder with a magical, theatrical theme. Create powerful regular expressions without writing regex syntax directly.
 
+### Live Demo
+
+Try the live demo at: **https://magic-strings.vercel.app/**
+
 ## Project Overview
 
 **Magic Strings** is a Next.js web application that helps users build regular expressions through an intuitive visual interface. Instead of typing regex syntax directly, users select criteria (like "starts with", "contains digits", etc.), configure flags, and watch the regex pattern build automatically. Patterns can be tested, saved to localStorage (your "Spellbook"), and exported for use.
@@ -69,36 +73,42 @@ magic-strings/
 ├── app/                          # Next.js App Router
 │   ├── page.tsx                 # Home page entry point
 │   ├── layout.tsx               # Root layout with Error Boundary
-│   └── globals.css              # Global styles
+│   └── globals.css              # Global styles and animations
 │
 ├── components/
 │   ├── regex-builder.tsx        # Main regex builder component
-│   ├── magic-button.tsx         # Button with sparkle effects
-│   ├── magic-input.tsx          # Input with shine/sparkle effects
-│   ├── magic-select.tsx         # Select with magic effects
-│   ├── magic-icons.tsx          # Custom icon components
 │   ├── saved-regex-sidebar.tsx  # Spellbook sidebar (desktop)
 │   ├── saved-regex-tray.tsx     # Spellbook drawer (mobile)
-│   ├── spotlight-background.tsx # Animated background
+│   ├── particle-effects.tsx     # Particle animation component
 │   ├── error-boundary.tsx       # Error recovery component
-│   ├── theme-provider.tsx       # Next.js theme provider wrapper
-│   └── ui/                      # Shadcn/ui component library
+│   ├── theme-provider.tsx       # Theme provider wrapper
+│   ├── icons.tsx                # Custom icon components
+│   └── ui/                      # Shadcn/ui base components
+│       ├── button.tsx
+│       ├── input.tsx
+│       ├── select.tsx
+│       ├── alert.tsx
+│       ├── badge.tsx
+│       ├── sheet.tsx
+│       └── ... (other base components)
 │
 ├── hooks/
-│   └── use-toast.ts             # Toast notification hook
+│   └── use-particle-effect.ts   # Particle effect animation hook
 │
 ├── lib/
 │   ├── regex-utils.ts           # Regex building and testing logic
 │   ├── storage.ts               # localStorage wrapper with error handling
 │   ├── constants.ts             # Criterion types, quantifiers, config
-│   └── utils.ts                 # General utilities
+│   ├── particle-utils.ts        # Particle animation utilities
+│   ├── utils.ts                 # General utilities (cn for className)
+│   └── __tests__/
+│       └── regex-utils.test.ts  # Unit tests for regex utilities
 │
 ├── types/
 │   └── regex.ts                 # Core TypeScript interfaces
 │
 ├── public/                       # Static assets
-├── styles/                       # Additional stylesheets
-└── config files                  # tsconfig, tailwind.config, etc.
+└── config files                  # tsconfig, tailwind.config, next.config, etc.
 ```
 
 ---
@@ -138,7 +148,11 @@ The "Spellbook" is the collection of saved regex patterns stored in browser loca
 
 ### Running Tests
 
-Currently, the project doesn't have automated tests. This is a future enhancement.
+Tests are located in `lib/__tests__/` and can be run with:
+
+```bash
+pnpm test
+```
 
 ### Code Organization
 
@@ -147,8 +161,10 @@ Business logic is separated from UI components:
 - **`lib/regex-utils.ts`**: Pure functions for building regex and testing patterns
 - **`lib/storage.ts`**: Abstraction over localStorage with error handling
 - **`lib/constants.ts`**: Configuration constants (criterion types, quantifiers)
-- **`app/globals.css`**: CSS-based animations for magic effects (sparkle, shine, spotlight)
-- **Components**: UI presentation and user interaction
+- **`lib/particle-utils.ts`**: Particle animation utilities
+- **`lib/utils.ts`**: General utilities (cn for className)
+- **`app/globals.css`**: Styling and magical effects
+- **Components**: UI presentation and user interaction using Shadcn/ui base components
 
 ### Debugging
 
@@ -220,23 +236,7 @@ if (error) {
 }
 ```
 
-### CSS-Based Animations
 
-Magic Strings uses pure CSS animations for effects with no component props or JavaScript state.
-
-**Magic Components**:
-- `MagicButton`: Always includes `.magic-shine` and `.magic-sparkle` effects
-- `MagicInput`: Always includes `.magic-shine`, `.magic-sparkle`, and `.magic-spotlight-focus` effects
-- `MagicSelectTrigger`: Always includes all three effects
-
-**CSS Classes Applied**:
-- `.magic-shine`: Gradient shine effect on hover/focus
-- `.magic-sparkle`: ✨ emoji pop animation on click
-- `.magic-spotlight-focus`: Radial spotlight glow on focus
-
-All animations are triggered automatically via CSS pseudo-classes (`:hover`, `:focus`, `:active`) with zero JavaScript overhead.
-
----
 
 ## Data Types
 
@@ -303,7 +303,7 @@ Regex patterns can throw errors (invalid syntax) or cause performance issues (ca
 
 ## Performance Considerations
 
-1. **Animations**: Magic effects (sparkle, shine, spotlight) are throttled and cleaned up properly to prevent memory leaks
+1. **Animations**: Magic effects are implemented efficiently and cleaned up properly to prevent memory leaks
 2. **Regex Testing**: User-provided regex patterns are tested with a timeout to prevent browser freeze
 3. **localStorage**: Patterns are loaded once on mount; saves are immediate and asynchronous
 4. **Code Splitting**: UI components are lazy-loaded by Next.js automatically
@@ -386,4 +386,4 @@ For issues, questions, or contributions, please refer to the project repository 
 
 ---
 
-**Last Updated:** February 7, 2026
+**Last Updated:** February 8, 2026

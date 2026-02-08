@@ -9,11 +9,11 @@ Magic Strings follows a **layered architecture** with clear separation of concer
 ```
 ┌─────────────────────────────────────────┐
 │      UI Layer (React Components)        │
-│  - RegexBuilder, MagicButton, etc.      │
+│  - RegexBuilder, SavedRegexSidebar, etc.│
 ├─────────────────────────────────────────┤
-│      Logic Layer (Utils & CSS)          │
+│      Logic Layer (Utils & Styling)      │
 │  - buildRegex, regex utilities          │
-│  - CSS animations (no JS state)         │
+│  - CSS animations via Tailwind          │
 ├─────────────────────────────────────────┤
 │      Persistence Layer (Storage)        │
 │  - localStorage abstraction              │
@@ -36,26 +36,24 @@ Magic Strings follows a **layered architecture** with clear separation of concer
   - Handles save/reset/edit actions
   - ~280 lines (monolithic, could be further decomposed)
 
-- **`MagicButton.tsx`**: Reusable button with sparkle effects
-  - CSS-based animations (`.magic-sparkle`, `.magic-shine`)
-  - Maintains accessibility (focus rings, keyboard support)
-  - No animation state management needed
+- **`Button` (from shadcn/ui)**: Reusable button component
+  - Accessible with focus rings and keyboard support
+  - Styled using Tailwind CSS
 
-- **`MagicInput.tsx`**: Reusable input with shine/sparkle/spotlight effects
-  - CSS-based animations via utility classes
-  - Adds visual feedback on interaction
+- **`Input` (from shadcn/ui)**: Reusable input component
   - Accessible keyboard focus support
+  - Styled with magical theme
 
 - **`SavedRegexSidebar.tsx`**: Desktop sidebar for Spellbook
   - Displays saved patterns
   - Edit/delete actions
   - Responsive drawer on mobile
 
-- **`SpotlightBackground.tsx`**: Animated background component
-  - Creates atmospheric effect
-  - No business logic
+- **`ParticleEffects.tsx`**: Particle animation component
+  - Creates interactive visual effects
+  - Uses particle animation utilities
 
-**Pattern**: Components are **presentational** - they receive data as props and call callbacks for actions. Visual effects are purely CSS-driven and don't require JavaScript state management.
+**Pattern**: Components are **presentational** - they receive data as props and call callbacks for actions. Visual effects are implemented through CSS styling and animations.
 
 ### 2. Logic Layer (Hooks & Utils)
 #### Utilities (`lib/`)
@@ -228,19 +226,19 @@ User enters test string
 
 ### 2. **CSS-Based Visual Effects**
 
-**Decision**: Implement all magical animations (sparkle, shine, spotlight) using pure CSS classes instead of React state
+**Decision**: Implement magical animations using CSS styling and Tailwind utilities instead of JavaScript state management
 
 **Rationale**:
 - Better performance (GPU acceleration, no JavaScript overhead)
 - Simpler component code (no state management needed)
-- Easier to maintain (edit in one place - globals.css)
-- CSS-in-JS remains an option for dynamic styles
+- Easier to maintain and update
+- Reduced bundle size
 
 **Result**:
-- MagicButton, MagicInput, MagicSelect use `.magic-shine`, `.magic-sparkle`, `.magic-spotlight-focus` classes
+- Components use Tailwind CSS classes for styling
 - Animations triggered by CSS pseudo-classes (`:hover`, `:focus`, `:active`)
 - No animation state in React - completely CSS-driven
-- Reduced component complexity and bundle size
+- Particle effects handled by dedicated component
 
 ### 3. **Defensive Storage Layer**
 
@@ -475,4 +473,4 @@ E2E Tests
 
 ---
 
-**Last Updated:** February 7, 2026
+**Last Updated:** February 8, 2026
