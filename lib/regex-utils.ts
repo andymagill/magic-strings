@@ -11,8 +11,53 @@ export function escapeRegex(str: string): string {
 }
 
 /**
+ * Determines if a criterion type needs grouping when combined with other criteria
+ * Grouping is needed for multi-character patterns that could be ambiguous when concatenated
+ *
+ * @param type - The criterion type to check
+ * @param value - The value of the criterion (for length checks)
+ * @returns true if the criterion needs grouping
+ */
+function needsGrouping(type: string, value: string): boolean {
+  // Single-character patterns that don't need grouping
+  const singleCharTypes = ["digit", "word_char", "whitespace", "any_char"]
+  if (singleCharTypes.includes(type)) return false
+
+  // Character classes already have delimiters
+  const classTypes = ["letter_upper", "letter_lower", "custom_class", "not"]
+  if (classTypes.includes(type)) return false
+
+  // Already grouped patterns
+  if (type === "group" || type === "or") return false
+
+  // starts_with at the beginning doesn't need grouping (it's first)
+  // exact also doesn't need grouping as it's a complete pattern
+  if (type === "starts_with" || type === "exact") return false
+
+  // Multi-character patterns need grouping (including ends_with)
+  if (type === "contains" || type === "literal" || type === "ends_with") {
+    return value.length > 1
+  }
+
+  return false
+}
+
+/**
+ * Wraps a pattern part in a non-capturing group if needed
+ * Used to ensure proper boundaries between concatenated criteria
+ *
+ * @param part - The pattern string to potentially wrap
+ * @param shouldGroup - Whether grouping is needed
+ * @returns The pattern, wrapped in (?:...) if shouldGroup is true
+ */
+function wrapInGroup(part: string, shouldGroup: boolean): string {
+  return shouldGroup ? `(?:${part})` : part
+}
+
+/**
  * Builds a regex pattern from criteria and flags
  * Transforms user-selected criteria into a valid regex string
+ * Adds proper grouping to ensure patterns combine correctly
  *
  * @param criteria - Array of regex criteria to combine
  * @param flags - Regex flags (global, caseInsensitive, etc)
@@ -22,9 +67,13 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
   if (criteria.length === 0) return ""
 
   let pattern = ""
+  const hasMultipleCriteria = criteria.length > 1
 
-  for (const c of criteria) {
+  for (let i = 0; i < criteria.length; i++) {
+    const c = criteria[i]
+    const isNotFirst = i > 0
     let part: string
+    let anchor = "" // Separate anchor for ends_with
 
     // Transform criterion type to regex pattern
     switch (c.type) {
@@ -32,7 +81,9 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
         part = `^${escapeRegex(c.value)}`
         break
       case "ends_with":
-        part = `${escapeRegex(c.value)}$`
+        // Keep anchor separate so we can wrap just the content
+        part = escapeRegex(c.value)
+        anchor = "$"
         break
       case "contains":
         part = escapeRegex(c.value)
@@ -81,6 +132,14 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
         part = escapeRegex(c.value)
     }
 
+    // Determine if this part needs grouping before applying quantifiers
+    const shouldGroup = hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value)
+    
+    // Wrap in group if needed (before quantifiers are applied)
+    if (shouldGroup) {
+      part = wrapInGroup(part, true)
+    }
+
     // Apply quantifier (skip for anchored patterns)
     if (!["starts_with", "ends_with", "exact"].includes(c.type)) {
       switch (c.quantifier) {
@@ -102,7 +161,8 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
       }
     }
 
-    pattern += part
+    // Add the part and any anchor
+    pattern += part + anchor
   }
 
   // Construct flag string
