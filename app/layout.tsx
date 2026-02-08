@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from 'next/font/google'
 
 import './globals.css'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { ParticleEffects } from '@/components/particle-effects'
 import { ThemeProvider } from '@/components/theme-provider'
 
 const playfair = Playfair_Display({
@@ -37,9 +38,11 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased min-h-screen overflow-x-hidden">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
+          <ParticleEffects>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </ParticleEffects>
         </ThemeProvider>
       </body>
     </html>
