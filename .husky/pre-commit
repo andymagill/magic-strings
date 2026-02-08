@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Format code with Prettier
+pnpm format:fix
+
+# Fix linting issues
+pnpm lint:fix
+
+# Run tests
+pnpm test
