@@ -247,8 +247,8 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
 
         {criteria.length === 0 && (
           <div className="rounded-xl border border-dashed border-border/50 p-8 text-center">
-            <HandIcon className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground/60">
+            <HandIcon className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground">
               No criteria yet. Add your first rule to begin the incantation.
             </p>
           </div>

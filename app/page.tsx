@@ -110,14 +110,11 @@ export default function Page() {
             <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
               Conjure powerful regular expressions with a wave of your wand
             </p>
-
-            {/* Decorative spotlight line */}
-            <div className="mt-6 w-48 h-px bg-gradient-to-r from-accent/40 via-accent/20 to-transparent" />
           </div>
         </header>
 
         {/* Content */}
-        <div className="relative z-10 px-4 pb-12 max-w-2xl mx-auto space-y-6">
+        <div className="relative z-10 px-4 sm:px-0 pb-12 max-w-2xl mx-auto space-y-6">
           {/* Builder Card - Main Stage */}
           <section
             className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 shadow-2xl shadow-black/20"
@@ -137,7 +134,7 @@ export default function Page() {
 
           {/* Footer decoration */}
           <footer className="text-center pt-6">
-            <div className="flex items-center justify-center gap-2 text-muted-foreground/30">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <SparklesIcon className="w-4 h-4" />
               <span className="text-xs font-serif italic">Every great regex starts with a little magic</span>
               <SparklesIcon className="w-4 h-4" />
