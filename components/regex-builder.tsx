@@ -197,7 +197,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
             <WandIcon className="w-6 h-6 text-accent animate-wand-wave" />
           </div>
           <h2 className="text-xl font-serif font-bold text-foreground">
-            Craft Your Spell
+            Cast Your Regular Expression
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -343,7 +343,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
       <div className="space-y-3">
         <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
           <WandIcon className="w-4 h-4 text-accent" />
-          Regex Flags
+          Magical Modifiers
         </span>
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -375,7 +375,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
       <div className="space-y-3">
         <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
           <SparklesIcon className="w-4 h-4 text-accent" />
-          The Magic String
+          The Spell Pattern
         </span>
         <div className="relative group">
           <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-accent/20 via-foreground/10 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -428,7 +428,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
             className="bg-yellow-400 text-black hover:bg-white disabled:bg-slate-300 disabled:text-slate-800 disabled:cursor-not-allowed shrink-0"
           >
             <WandIcon className="w-4 h-4 mr-1" />
-            Test
+            Test Pattern
           </Button>
         </div>
         {testError && (

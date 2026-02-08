@@ -105,16 +105,6 @@ The application has a magical/theatrical aesthetic. Use these conventions:
 - **Colors**: Use accent color for magical effects, reference CSS variables
 - **Icons**: Custom WandIcon and SparklesIcon from `@/components/icons`
 
-```tsx
-// ✅ Magical terminology
-<h2>Craft Your Spell</h2>
-<button>Seal the Spell</button>
-
-// ❌ Generic terminology
-<h2>Build Regex</h2>
-<button>Save Pattern</button>
-```
-
 ## Common Tasks
 
 ### Adding a New Criterion Type

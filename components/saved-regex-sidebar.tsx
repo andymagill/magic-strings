@@ -49,7 +49,7 @@ export function SavedRegexSidebar({
         <div className="p-6">
           <div className="flex items-center gap-3 mb-6">
             <TopHatIcon className="w-6 h-6 text-accent" />
-            <h2 className="font-serif font-bold text-xl text-foreground">Spellbook</h2>
+            <h2 className="font-serif font-bold text-xl text-foreground">Regex Spellbook</h2>
             <Badge variant="outline" className="text-accent border-accent/30 text-xs ml-auto">
               {savedRegexes.length}
             </Badge>
