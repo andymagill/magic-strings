@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest watch"
@@ -53,6 +55,7 @@
     "eslint-config-next": "^16.1.6",
     "globals": "^17.3.0",
     "postcss": "^8.5",
+    "prettier": "^3.8.1",
     "tailwindcss": "^3.4.17",
     "typescript": "5.7.3",
     "vitest": "^4.0.18"
