@@ -73,7 +73,8 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
     const c = criteria[i]
     const isNotFirst = i > 0
     let part: string
-    let anchor = "" // Separate anchor for ends_with
+    // Store anchor separately to prevent it from being wrapped in grouping parentheses
+    let anchor = ""
 
     // Transform criterion type to regex pattern
     switch (c.type) {
@@ -133,6 +134,7 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
     }
 
     // Determine if this part needs grouping before applying quantifiers
+    // All three conditions must be true: multiple criteria exist, this is not the first, and the type needs grouping
     const shouldGroup = hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value)
     
     // Wrap in group if needed (before quantifiers are applied)
