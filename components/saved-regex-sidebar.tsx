@@ -141,7 +141,7 @@ export function SavedRegexSidebar({
             <SheetTitle className="flex items-center gap-3">
               <TopHatIcon className="w-6 h-6 text-accent" />
               <span className="font-serif">Spellbook</span>
-              <Badge variant="outline" className="text-accent border-accent/30 text-xs ml-auto">
+              <Badge variant="outline" className="text-accent border-accent/30 text-xs">
                 {savedRegexes.length}
               </Badge>
             </SheetTitle>
