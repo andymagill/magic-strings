@@ -336,9 +336,8 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
         </div>
 
         <Button
-          variant="outline"
           onClick={addCriterion}
-          className="w-full border-dashed border-border/50 text-muted-foreground hover:text-accent hover:border-accent/30 bg-transparent"
+          className="w-full bg-yellow-400 text-black hover:bg-white disabled:bg-slate-500 disabled:text-slate-600 disabled:cursor-not-allowed"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Criterion
@@ -431,7 +430,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
           <Button
             onClick={handleTest}
             disabled={!regex || regex === "//"}
-            className="bg-accent text-accent-foreground hover:bg-accent/80 shrink-0"
+            className="bg-yellow-400 text-black hover:bg-white disabled:bg-slate-500 disabled:text-slate-600 disabled:cursor-not-allowed shrink-0"
           >
             <WandIcon className="w-4 h-4 mr-1" />
             Test

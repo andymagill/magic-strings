@@ -57,8 +57,7 @@ export function SavedRegexSidebar({
 
           <Button
             onClick={onNew}
-            variant="outline"
-            className="w-full mb-4 border-accent/30 text-accent hover:bg-accent/10"
+            className="w-full mb-4 bg-yellow-400 text-black hover:bg-white disabled:bg-slate-500 disabled:text-slate-600 disabled:cursor-not-allowed"
           >
             + New
           </Button>
