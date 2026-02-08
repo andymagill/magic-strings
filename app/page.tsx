@@ -129,7 +129,6 @@ export default function Page() {
             className="rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 shadow-2xl shadow-black/20"
             aria-label="Regex builder - Magic Stage"
           >
-            {/* Spotlight glow on card */}
             <div className="absolute -inset-1 rounded-2xl bg-gradient-to-b from-accent/5 via-transparent to-transparent pointer-events-none" />
             <div className="relative">
               <RegexBuilder
