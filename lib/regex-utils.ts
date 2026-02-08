@@ -227,19 +227,29 @@ export function testRegexSafe(
         }
       }
 
-      // Get all matches
-      const allMatches = testString.match(
-        new RegExp(
-          patternMatch[1],
-          patternMatch[2].includes("g") ? patternMatch[2] : patternMatch[2] + "g"
-        )
+      // Get matches respecting user's flag selection
+      const matchResult = testString.match(
+        new RegExp(patternMatch[1], patternMatch[2])
       )
 
       clearTimeout(timeoutId)
 
+      // Handle different return types based on global flag
+      let matchedParts: string[] = []
+      if (matchResult) {
+        // With global flag: returns array of all matches
+        // Without global flag: returns match object with captured groups
+        if (patternMatch[2].includes("g")) {
+          matchedParts = matchResult as string[]
+        } else {
+          // For non-global, return just the matched string (first element)
+          matchedParts = [matchResult[0]]
+        }
+      }
+
       return {
         matches: testMatches,
-        matchedParts: allMatches || [],
+        matchedParts,
       }
     } finally {
       clearTimeout(timeoutId)

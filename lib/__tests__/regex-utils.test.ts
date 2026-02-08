@@ -270,10 +270,28 @@ describe('buildRegex - Edge Cases', () => {
 })
 
 describe('testRegexSafe', () => {
-  it('should test a valid pattern', () => {
+  it('should test a valid pattern with global flag', () => {
     const result = testRegexSafe('/test/gi', 'This is a test')
     expect(result.matches).toBe(true)
     expect(result.matchedParts).toEqual(['test'])
+  })
+
+  it('should test a valid pattern without global flag (single match)', () => {
+    const result = testRegexSafe('/test/i', 'This is a test')
+    expect(result.matches).toBe(true)
+    expect(result.matchedParts).toEqual(['test'])
+  })
+
+  it('should return only first match for non-global flag on multiple matches', () => {
+    const result = testRegexSafe('/hello/', 'hello world hello again')
+    expect(result.matches).toBe(true)
+    expect(result.matchedParts).toEqual(['hello'])
+  })
+
+  it('should return all matches for global flag', () => {
+    const result = testRegexSafe('/hello/g', 'hello world hello again')
+    expect(result.matches).toBe(true)
+    expect(result.matchedParts).toEqual(['hello', 'hello'])
   })
 
   it('should return false for non-matching pattern', () => {
