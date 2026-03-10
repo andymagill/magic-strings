@@ -7,13 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --check .",
-    "format:fix": "prettier --write .",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
     "test": "vitest run",
     "test:ui": "vitest --ui",
-    "test:watch": "vitest watch",
     "prepare": "husky"
   },
   "dependencies": {
