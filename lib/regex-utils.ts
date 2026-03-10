@@ -134,8 +134,15 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
     }
 
     // Determine if this part needs grouping before applying quantifiers
-    // All three conditions must be true: multiple criteria exist, this is not the first, and the type needs grouping
-    const shouldGroup = hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value);
+    // Group for two independent reasons:
+    // 1. Concatenation: multiple criteria exist, this is not the first, and the type needs grouping
+    // 2. Quantifier: a non-trivial quantifier is applied to a multi-character pattern
+    const shouldGroupForConcatenation =
+      hasMultipleCriteria && isNotFirst && needsGrouping(c.type, c.value);
+    const hasNontrivialQuantifier =
+      c.quantifier !== "one" && !["starts_with", "ends_with", "exact"].includes(c.type);
+    const shouldGroupForQuantifier = hasNontrivialQuantifier && needsGrouping(c.type, c.value);
+    const shouldGroup = shouldGroupForConcatenation || shouldGroupForQuantifier;
 
     // Wrap in group if needed (before quantifiers are applied)
     if (shouldGroup) {

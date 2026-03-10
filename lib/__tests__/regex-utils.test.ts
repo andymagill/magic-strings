@@ -148,6 +148,54 @@ describe("buildRegex - Quantifiers with Grouping", () => {
     dotAll: false,
   };
 
+  it("should group multi-char value with quantifier in single-criterion pattern", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "abc", quantifier: "one_or_more" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:abc)+/");
+  });
+
+  it("should group multi-char literal with quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "literal", value: "ab", quantifier: "one_or_more" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:ab)+/");
+  });
+
+  it("should not group single-char value with quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "a", quantifier: "one_or_more" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/a+/");
+  });
+
+  it("should group multi-char with zero_or_more quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "ABC", quantifier: "zero_or_more" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:ABC)*/");
+  });
+
+  it("should group multi-char with optional quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "XX", quantifier: "optional" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:XX)?/");
+  });
+
+  it("should group multi-char with lazy quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "YY", quantifier: "lazy" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:YY)*?/");
+  });
+
   it("should apply quantifier after grouping", () => {
     const criteria: RegexCriterion[] = [
       { id: "1", type: "starts_with", value: "A", quantifier: "one" },
@@ -155,6 +203,15 @@ describe("buildRegex - Quantifiers with Grouping", () => {
     ];
     const result = buildRegex(criteria, defaultFlags);
     expect(result).toBe("/^A(?:BB)+/");
+  });
+
+  it("should group first-criterion with quantifier in multi-criteria pattern", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "contains", value: "abc", quantifier: "one_or_more" },
+      { id: "2", type: "digit", value: "", quantifier: "one" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/(?:abc)+\\d/");
   });
 
   it("should apply zero_or_more quantifier after grouping", () => {
@@ -173,6 +230,15 @@ describe("buildRegex - Quantifiers with Grouping", () => {
     ];
     const result = buildRegex(criteria, defaultFlags);
     expect(result).toBe("/\\d(?:XX)?/");
+  });
+
+  it("should not group single-char value in multi-criteria with quantifier", () => {
+    const criteria: RegexCriterion[] = [
+      { id: "1", type: "starts_with", value: "A", quantifier: "one" },
+      { id: "2", type: "contains", value: "b", quantifier: "one_or_more" },
+    ];
+    const result = buildRegex(criteria, defaultFlags);
+    expect(result).toBe("/^Ab+/");
   });
 
   it("should apply lazy quantifier after grouping", () => {
@@ -268,6 +334,24 @@ describe("buildRegex - Edge Cases", () => {
 });
 
 describe("testRegexSafe", () => {
+  it("should match multi-char repetition correctly with grouping", () => {
+    const result = testRegexSafe("/(?:abc)+/", "abcabc");
+    expect(result.matches).toBe(true);
+    expect(result.matchedParts).toEqual(["abcabc"]);
+  });
+
+  it("should match partial repetition when pattern is present", () => {
+    const result = testRegexSafe("/(?:abc)+/", "abcccc");
+    expect(result.matches).toBe(true);
+    expect(result.matchedParts).toEqual(["abc"]);
+  });
+
+  it("should return all abc repetitions with global flag", () => {
+    const result = testRegexSafe("/(?:abc)+/g", "abcabcXabcabc");
+    expect(result.matches).toBe(true);
+    expect(result.matchedParts).toEqual(["abcabc", "abcabc"]);
+  });
+
   it("should test a valid pattern with global flag", () => {
     const result = testRegexSafe("/test/gi", "This is a test");
     expect(result.matches).toBe(true);
