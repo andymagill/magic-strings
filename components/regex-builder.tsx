@@ -127,6 +127,12 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
     };
   }, [criteria, flags, regex, testError, onSave, onDelete, editingRegex, onCancelEdit]);
 
+  // Clear test results when criteria or flags change
+  useEffect(() => {
+    setTestResult(null);
+    setTestError(null);
+  }, [criteria, flags]);
+
   const addCriterion = useCallback(() => {
     setCriteria((prev) => [
       ...prev,
