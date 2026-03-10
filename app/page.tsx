@@ -29,25 +29,30 @@ export default function Page() {
   const handleSave = useCallback((saved: SavedRegex) => {
     setSavedRegexes((prev) => {
       const existing = prev.findIndex((r) => r.id === saved.id);
-      let next: SavedRegex[];
       if (existing >= 0) {
         // Update existing and move to front (most recent)
-        next = [saved, ...prev.filter((r) => r.id !== saved.id)];
+        return [saved, ...prev.filter((r) => r.id !== saved.id)];
       } else {
-        next = [saved, ...prev];
+        return [saved, ...prev];
       }
-      addSavedRegex(saved);
-      return next;
     });
+    // Persist to localStorage after state update (side effect outside updater)
+    const err = addSavedRegex(saved);
+    if (err) {
+      console.error("Failed to save regex:", err);
+      // Could emit toast notification here if toast system is added
+    }
     setEditingRegex(null);
   }, []);
 
   const handleDelete = useCallback((id: string) => {
-    setSavedRegexes((prev) => {
-      const next = prev.filter((r) => r.id !== id);
-      removeSavedRegex(id);
-      return next;
-    });
+    setSavedRegexes((prev) => prev.filter((r) => r.id !== id));
+    // Persist deletion to localStorage after state update (side effect outside updater)
+    const err = removeSavedRegex(id);
+    if (err) {
+      console.error("Failed to delete regex:", err);
+      // Could emit toast notification here if toast system is added
+    }
   }, []);
 
   const handleEdit = useCallback((regex: SavedRegex) => {

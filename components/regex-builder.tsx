@@ -64,7 +64,7 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
     }
   }, [editingRegex]);
 
-  // Auto-save logic: triggers on criteria/flags changes with debouncing and validity check
+  // Auto-save logic: debounced save on criteria/flags changes with validity check
   useEffect(() => {
     // Clear any pending save
     if (saveTimeoutRef.current) {
@@ -84,41 +84,23 @@ export function RegexBuilder({ onSave, onDelete, editingRegex, onCancelEdit }: R
     // Check if regex is valid for saving
     const isValidRegex = regex !== "//" && !testError;
 
-    // Set up auto-save timeout (3 seconds inactivity)
-    saveTimeoutRef.current = setTimeout(() => {
-      if (isValidRegex && criteria.length > 0) {
-        const saved: SavedRegex = {
-          id: currentIdRef.current,
-          criteria,
-          flags,
-          regex,
-          createdAt: editingRegex?.createdAt || Date.now(),
-        };
-        onSave(saved);
-        setSaveError(null);
-      }
-    }, 3000);
-
-    // If regex becomes valid immediately, trigger save without waiting
-    if (isValidRegex && criteria.length > 0 && regex !== "//") {
-      // Shorter timeout for valid changes
-      const quickSaveTimeout = setTimeout(() => {
-        const saved: SavedRegex = {
-          id: currentIdRef.current,
-          criteria,
-          flags,
-          regex,
-          createdAt: editingRegex?.createdAt || Date.now(),
-        };
-        onSave(saved);
-        setSaveError(null);
-      }, 500);
-
-      return () => {
-        clearTimeout(quickSaveTimeout);
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-      };
+    if (!isValidRegex) {
+      setSaveError(null);
+      return;
     }
+
+    // Debounced save: single 500ms timeout for valid patterns
+    saveTimeoutRef.current = setTimeout(() => {
+      const saved: SavedRegex = {
+        id: currentIdRef.current,
+        criteria,
+        flags,
+        regex,
+        createdAt: editingRegex?.createdAt || Date.now(),
+      };
+      onSave(saved);
+      setSaveError(null);
+    }, 500);
 
     return () => {
       if (saveTimeoutRef.current) {

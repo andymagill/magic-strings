@@ -2,6 +2,9 @@
  * Particle system utilities for generating firework burst effects
  */
 
+// Monotonic particle ID counter to prevent collisions
+let _particleIdCounter = 0;
+
 export interface Particle {
   id: string;
   x: number;
@@ -23,7 +26,7 @@ export interface Particle {
  *
  * @example
  * const particles = generateFireworkParticles(100, 200)
- * // Returns ~14 particles fanning out in all directions
+ * // Returns ~6-8 particles fanning out in all directions
  */
 export function generateFireworkParticles(x: number, y: number): Particle[] {
   const particleCount = 6 + Math.floor(Math.random() * 3); // 6-8 particles
@@ -39,7 +42,7 @@ export function generateFireworkParticles(x: number, y: number): Particle[] {
     const ty = Math.sin(angle) * velocity;
 
     particles.push({
-      id: `${Date.now()}-${i}`,
+      id: `p-${++_particleIdCounter}`,
       x,
       y,
       tx,

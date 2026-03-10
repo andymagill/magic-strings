@@ -14,64 +14,47 @@ export function ParticleEffects({ children }: { children: React.ReactNode }) {
 
   // Capture click events globally and generate particles
   useEffect(() => {
+    // List of interactive HTML tags and ARIA roles
+    const INTERACTIVE_TAGS = new Set(["BUTTON", "INPUT", "SELECT", "TEXTAREA", "A"]);
+    const INTERACTIVE_ROLES = new Set([
+      "button",
+      "menuitem",
+      "tab",
+      "switch",
+      "link",
+      "combobox",
+      "listbox",
+      "option",
+    ]);
+
+    /**
+     * Check if a single element is interactive
+     */
+    const isInteractiveElement = (el: Element): boolean => {
+      if (INTERACTIVE_TAGS.has(el.tagName)) return true;
+      const role = el.getAttribute("role");
+      if (role && INTERACTIVE_ROLES.has(role)) return true;
+      if (el.getAttribute("data-select-trigger") === "true") return true;
+      return false;
+    };
+
+    /**
+     * Check if clicked element or any ancestor is clickable (up to 6 levels)
+     */
+    const isClickableElement = (el: HTMLElement | null): boolean => {
+      let node: Element | null = el;
+      for (let depth = 0; node && depth < 6; depth++) {
+        if (isInteractiveElement(node)) return true;
+        node = node.parentElement;
+      }
+      return false;
+    };
+
     const handleClick = (e: MouseEvent) => {
       // Only trigger on user clicks (not programmatic clicks)
       if (!e.isTrusted) return;
 
       const target = e.target as HTMLElement;
-
-      // Check if the clicked element or any parent is clickable
-      const isClickableElement = (el: HTMLElement | null): boolean => {
-        if (!el) return false;
-
-        // Check for select trigger marker (though we handle this via custom event now)
-        if (el.getAttribute("data-select-trigger") === "true") return true;
-
-        const clickableTags = ["BUTTON", "INPUT", "SELECT", "TEXTAREA", "A"];
-        if (clickableTags.includes(el.tagName)) return true;
-
-        // Check for role="button" or similar interactive roles
-        const role = el.getAttribute("role");
-        if (
-          role &&
-          ["button", "menuitem", "tab", "switch", "link", "combobox", "listbox", "option"].includes(
-            role
-          )
-        )
-          return true;
-
-        // Check parent elements (up to 15 levels for nested Radix components)
-        let parent = el.parentElement;
-        let depth = 0;
-        while (parent && depth < 15) {
-          // Check for select trigger marker first
-          if (parent.getAttribute("data-select-trigger") === "true") return true;
-
-          if (clickableTags.includes(parent.tagName)) return true;
-
-          const parentRole = parent.getAttribute("role");
-          if (
-            parentRole &&
-            [
-              "button",
-              "menuitem",
-              "tab",
-              "switch",
-              "link",
-              "combobox",
-              "listbox",
-              "option",
-            ].includes(parentRole)
-          )
-            return true;
-
-          parent = parent.parentElement;
-          depth++;
-        }
-
-        return false;
-      };
-
       if (isClickableElement(target)) {
         const newParticles = generateFireworkParticles(e.clientX, e.clientY);
         setParticles((prev) => [...prev, ...newParticles]);

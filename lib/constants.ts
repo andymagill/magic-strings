@@ -30,7 +30,6 @@ export const QUANTIFIERS = [
   { value: "one_or_more", label: "1 or more (+)" },
   { value: "optional", label: "Optional (?)" },
   { value: "lazy", label: "Lazy (*?)" },
-  { value: "custom", label: "Custom {n,m}" },
 ] as const;
 
 /**

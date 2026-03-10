@@ -1,5 +1,4 @@
 import { RegexCriterion, RegexFlags } from "@/types/regex";
-import { REGEX_TIMEOUT_MS } from "@/lib/constants";
 
 /**
  * Escapes special regex characters to treat them as literals
@@ -164,9 +163,6 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
         case "lazy":
           part += "*?";
           break;
-        case "custom":
-          // Custom quantifier should be in value like {2,5}
-          break;
       }
     }
 
@@ -185,8 +181,8 @@ export function buildRegex(criteria: RegexCriterion[], flags: RegexFlags): strin
 }
 
 /**
- * Tests a string against a regex pattern with timeout protection
- * Prevents ReDoS (Regular Expression Denial of Service) attacks
+ * Tests a string against a regex pattern with safety protections
+ * Prevents ReDoS (Regular Expression Denial of Service) attacks by limiting input length
  *
  * @param pattern - Regex pattern string in format /pattern/flags
  * @param testString - String to test against
@@ -200,44 +196,29 @@ export function testRegexSafe(
     return { matches: false, matchedParts: [] };
   }
 
+  // Limit test string length to prevent catastrophic backtracking
+  // Most realistic patterns won't need to test against strings > 10KB
+  const MAX_TEST_LENGTH = 10000;
+  if (testString.length > MAX_TEST_LENGTH) {
+    return {
+      matches: false,
+      matchedParts: [],
+      error: `Test string too long (max ${MAX_TEST_LENGTH} characters)`,
+    };
+  }
+
   try {
     const patternMatch = pattern.match(/^\/(.+)\/([gimsuy]*)$/);
     if (!patternMatch) {
       return { matches: false, matchedParts: [], error: "Invalid regex pattern format" };
     }
 
-    // Test with timeout wrapper to prevent catastrophic backtracking
-    let timedOut = false;
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-    }, REGEX_TIMEOUT_MS);
-
     try {
       const re = new RegExp(patternMatch[1], patternMatch[2]);
-
-      // Check timeout
-      if (timedOut) {
-        return {
-          matches: false,
-          matchedParts: [],
-          error: "Regex took too long to execute (possible catastrophic backtracking)",
-        };
-      }
-
       const testMatches = re.test(testString);
-
-      if (timedOut) {
-        return {
-          matches: false,
-          matchedParts: [],
-          error: "Regex took too long to execute (possible catastrophic backtracking)",
-        };
-      }
 
       // Get matches respecting user's flag selection
       const matchResult = testString.match(new RegExp(patternMatch[1], patternMatch[2]));
-
-      clearTimeout(timeoutId);
 
       // Handle different return types based on global flag
       let matchedParts: string[] = [];
@@ -256,8 +237,12 @@ export function testRegexSafe(
         matches: testMatches,
         matchedParts,
       };
-    } finally {
-      clearTimeout(timeoutId);
+    } catch (error) {
+      return {
+        matches: false,
+        matchedParts: [],
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   } catch (error) {
     return {
